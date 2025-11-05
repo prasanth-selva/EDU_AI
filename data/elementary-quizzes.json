@@ -1,0 +1,20 @@
+{
+  "quizzes": [
+    {
+      "id": 1,
+      "question": "🐘 What is 5 + 3?",
+      "options": ["7", "8", "9"],
+      "correct": 1,
+      "subject": "math",
+      "explanation": "5 + 3 = 8! Great job! 🎉"
+    },
+    {
+      "id": 2,
+      "question": "🌈 Which color comes after Red in rainbow?",
+      "options": ["Blue", "Orange", "Green"],
+      "correct": 1,
+      "subject": "science",
+      "explanation": "Rainbow order: Red, Orange, Yellow, Green, Blue, Indigo, Violet!"
+    }
+  ]
+}

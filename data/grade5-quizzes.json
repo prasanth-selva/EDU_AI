@@ -1,0 +1,20 @@
+{
+  "quizzes": [
+    {
+      "id": 1,
+      "question": "📐 What is 12 × 8?",
+      "options": ["96", "84", "108"],
+      "correct": 0,
+      "subject": "math",
+      "explanation": "12 × 8 = 96! Multiplication mastery! 🔥"
+    },
+    {
+      "id": 2,
+      "question": "🌍 Which planet is known as Red Planet?",
+      "options": ["Venus", "Mars", "Jupiter"],
+      "correct": 1,
+      "subject": "science",
+      "explanation": "Mars is called Red Planet due to iron oxide on its surface!"
+    }
+  ]
+}
