@@ -18,4 +18,4 @@ Telegram bot for gamified learning for elementary and grade 5 students.
 - Prasanth S (Lead)
 - Yuvaraja A
 - Vignesh B 
-- Sabareeshwaran S
+- Sabareeshwaran S# EDU_AI
