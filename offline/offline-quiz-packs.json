@@ -1,0 +1,130 @@
+{
+  "elementary_math": [
+    {
+      "question": "What is 7 + 8?",
+      "options": ["A) 14", "B) 15", "C) 16", "D) 17"],
+      "correct": 1,
+      "explanation": "7 + 8 = 15! Great job! 🎉"
+    },
+    {
+      "question": "How many sides does a square have?",
+      "options": ["A) 3", "B) 4", "C) 5", "D) 6"],
+      "correct": 1,
+      "explanation": "A square has 4 equal sides! ⬜"
+    },
+    {
+      "question": "What is 12 - 5?",
+      "options": ["A) 6", "B) 7", "C) 8", "D) 9"],
+      "correct": 1,
+      "explanation": "12 - 5 = 7! Subtraction success! 🎯"
+    },
+    {
+      "question": "What is 6 × 4?",
+      "options": ["A) 20", "B) 24", "C) 28", "D) 30"],
+      "correct": 1,
+      "explanation": "6 × 4 = 24! Multiplication mastery! 🔥"
+    },
+    {
+      "question": "How many minutes in one hour?",
+      "options": ["A) 50", "B) 60", "C) 70", "D) 80"],
+      "correct": 1,
+      "explanation": "There are 60 minutes in one hour! ⏰"
+    }
+  ],
+  "elementary_science": [
+    {
+      "question": "Which planet is closest to the Sun?",
+      "options": ["A) Earth", "B) Venus", "C) Mercury", "D) Mars"],
+      "correct": 2,
+      "explanation": "Mercury is the closest planet to the Sun! 🌞"
+    },
+    {
+      "question": "What do plants need to make food?",
+      "options": ["A) Water", "B) Sunlight", "C) Air", "D) All of the above"],
+      "correct": 3,
+      "explanation": "Plants need water, sunlight, and air for photosynthesis! 🌱"
+    },
+    {
+      "question": "Which animal gives us milk?",
+      "options": ["A) Lion", "B) Cow", "C) Tiger", "D) Elephant"],
+      "correct": 1,
+      "explanation": "Cow gives us milk! 🐄"
+    },
+    {
+      "question": "What season comes after winter?",
+      "options": ["A) Summer", "B) Spring", "C) Autumn", "D) Monsoon"],
+      "correct": 1,
+      "explanation": "Spring comes after winter! 🌸"
+    },
+    {
+      "question": "Which of these is a source of light?",
+      "options": ["A) Moon", "B) Sun", "C) Cloud", "D) Mountain"],
+      "correct": 1,
+      "explanation": "The Sun is our main source of light! ☀️"
+    }
+  ],
+  "grade5_math": [
+    {
+      "question": "What is 15% of 200?",
+      "options": ["A) 15", "B) 30", "C) 45", "D) 60"],
+      "correct": 1,
+      "explanation": "15% of 200 = 30! Percentage power! 🎯"
+    },
+    {
+      "question": "What is 12 × 8?",
+      "options": ["A) 96", "B) 84", "C) 108", "D) 120"],
+      "correct": 0,
+      "explanation": "12 × 8 = 96! Multiplication mastery! 🔥"
+    },
+    {
+      "question": "What is the area of a rectangle with length 8cm and width 5cm?",
+      "options": ["A) 13 cm²", "B) 40 cm²", "C) 26 cm²", "D) 35 cm²"],
+      "correct": 1,
+      "explanation": "Area = length × width = 8 × 5 = 40 cm²! 📐"
+    },
+    {
+      "question": "What is 3/4 + 1/2?",
+      "options": ["A) 1", "B) 1.25", "C) 1.5", "D) 1.75"],
+      "correct": 1,
+      "explanation": "3/4 + 1/2 = 3/4 + 2/4 = 5/4 = 1.25! Fraction fun! 🧮"
+    },
+    {
+      "question": "If x + 5 = 12, what is x?",
+      "options": ["A) 5", "B) 6", "C) 7", "D) 8"],
+      "correct": 2,
+      "explanation": "x + 5 = 12 → x = 12 - 5 = 7! Algebra achievement! 💪"
+    }
+  ],
+  "grade5_science": [
+    {
+      "question": "What is H₂O commonly known as?",
+      "options": ["A) Oxygen", "B) Water", "C) Carbon dioxide", "D) Hydrogen"],
+      "correct": 1,
+      "explanation": "H₂O is Water! Essential for all life! 💧"
+    },
+    {
+      "question": "Which gas do plants absorb from the air?",
+      "options": ["A) Oxygen", "B) Nitrogen", "C) Carbon dioxide", "D) Hydrogen"],
+      "correct": 2,
+      "explanation": "Plants absorb Carbon dioxide for photosynthesis! 🌿"
+    },
+    {
+      "question": "What is the force that pulls objects toward Earth?",
+      "options": ["A) Magnetism", "B) Gravity", "C) Friction", "D) Pressure"],
+      "correct": 1,
+      "explanation": "Gravity pulls objects toward Earth! 🌍"
+    },
+    {
+      "question": "Which planet is known as the Red Planet?",
+      "options": ["A) Venus", "B) Mars", "C) Jupiter", "D) Saturn"],
+      "correct": 1,
+      "explanation": "Mars is called the Red Planet due to iron oxide! 🔴"
+    },
+    {
+      "question": "What process do plants use to make food?",
+      "options": ["A) Respiration", "B) Photosynthesis", "C) Digestion", "D) Circulation"],
+      "correct": 1,
+      "explanation": "Plants use Photosynthesis to make food! 🌱"
+    }
+  ]
+}

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CodeX Learn - Offline</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .subject-card {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            color: white;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .subject-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        #quiz-container {
+            text-align: center;
+        }
+
+        #question-card h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .option-btn:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+
+        .option-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 10px;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #5a6fd8;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #result-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        #result-text {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        #explanation-text {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .back-btn {
+            background: #6c757d;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 CodeX Learn - Offline Mode</h1>
+        <div class="subject-grid">
+            <div class="subject-card" onclick="loadQuizzes('elementary_math')">
+                <h3>👶 Elementary Math</h3>
+                <p>100+ quizzes</p>
+            </div>
+            <div class="subject-card" onclick="loadQuizzes('elementary_science')">
+                <h3>🔬 Elementary Science</h3>
+                <p>80+ quizzes</p>
+            </div>
+            <div class="subject-card" onclick="loadQuizzes('grade5_math')">
+                <h3>📚 Grade 5 Math</h3>
+                <p>100+ quizzes</p>
+            </div>
+            <div class="subject-card" onclick="loadQuizzes('grade5_science')">
+                <h3>🧪 Grade 5 Science</h3>
+                <p>80+ quizzes</p>
+            </div>
+        </div>
+        
+        <div id="quiz-container" class="hidden">
+            <div id="question-card">
+                <h2 id="question-text"></h2>
+                <div id="options-container"></div>
+                <button onclick="checkAnswer()">Submit Answer</button>
+                <button class="back-btn" onclick="showMainMenu()">Back to Menu</button>
+            </div>
+            <div id="result-card" class="hidden">
+                <h2 id="result-text"></h2>
+                <p id="explanation-text"></p>
+                <button onclick="nextQuestion()">Next Quiz</button>
+                <button class="back-btn" onclick="showMainMenu()">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz data - will be loaded from JSON
+        let quizPacks = {
+            elementary_math: [],
+            elementary_science: [],
+            grade5_math: [],
+            grade5_science: []
+        };
+
+        let currentQuizzes = [];
+        let currentQuizIndex = 0;
+        let selectedAnswer = null;
+        let score = 0;
+
+        // Load quiz data from JSON file
+        async function loadQuizData() {
+            try {
+                const response = await fetch('offline-quiz-packs.json');
+                quizPacks = await response.json();
+                console.log('Quiz data loaded successfully!');
+            } catch (error) {
+                console.log('Using default quiz data');
+                loadDefaultQuizzes();
+            }
+        }
+
+        function loadDefaultQuizzes() {
+            quizPacks = {
+                elementary_math: [
+                    {
+                        question: "What is 5 + 3?",
+                        options: ["A) 7", "B) 8", "C) 9", "D) 10"],
+                        correct: 1,
+                        explanation: "5 + 3 = 8! Great job! 🎉"
+                    },
+                    {
+                        question: "How many sides does a triangle have?",
+                        options: ["A) 3", "B) 4", "C) 5", "D) 6"],
+                        correct: 0,
+                        explanation: "A triangle has 3 sides! 📐"
+                    }
+                ],
+                elementary_science: [
+                    {
+                        question: "Which animal gives us milk?",
+                        options: ["A) Lion", "B) Cow", "C) Tiger", "D) Elephant"],
+                        correct: 1,
+                        explanation: "Cow gives us milk! 🐄"
+                    }
+                ],
+                grade5_math: [
+                    {
+                        question: "What is 12 × 8?",
+                        options: ["A) 96", "B) 84", "C) 108", "D) 120"],
+                        correct: 0,
+                        explanation: "12 × 8 = 96! Multiplication mastery! 🔥"
+                    }
+                ],
+                grade5_science: [
+                    {
+                        question: "What is H₂O commonly known as?",
+                        options: ["A) Oxygen", "B) Water", "C) Carbon dioxide", "D) Hydrogen"],
+                        correct: 1,
+                        explanation: "H₂O is Water! Essential for life! 💧"
+                    }
+                ]
+            };
+        }
+
+        function loadQuizzes(packName) {
+            currentQuizzes = quizPacks[packName] || [];
+            if (currentQuizzes.length === 0) {
+                alert('No quizzes available for this subject yet!');
+                return;
+            }
+            
+            currentQuizIndex = 0;
+            score = 0;
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.querySelector('.subject-grid').classList.add('hidden');
+            showQuestion();
+        }
+        
+        function showQuestion() {
+            if (currentQuizIndex >= currentQuizzes.length) {
+                showFinalScore();
+                return;
+            }
+            
+            const quiz = currentQuizzes[currentQuizIndex];
+            document.getElementById('question-text').textContent = quiz.question;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            quiz.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.textContent = option;
+                button.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+            
+            document.getElementById('result-card').classList.add('hidden');
+            document.getElementById('question-card').classList.remove('hidden');
+            selectedAnswer = null;
+        }
+        
+        function selectAnswer(index) {
+            selectedAnswer = index;
+            document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            document.querySelectorAll('.option-btn')[index].classList.add('selected');
+        }
+        
+        function checkAnswer() {
+            if (selectedAnswer === null) {
+                alert('Please select an answer!');
+                return;
+            }
+            
+            const quiz = currentQuizzes[currentQuizIndex];
+            const isCorrect = selectedAnswer === quiz.correct;
+            
+            if (isCorrect) {
+                score++;
+            }
+            
+            document.getElementById('result-text').textContent = 
+                isCorrect ? '✅ Correct! 🎉' : '❌ Try Again!';
+            document.getElementById('explanation-text').textContent = quiz.explanation;
+            
+            document.getElementById('question-card').classList.add('hidden');
+            document.getElementById('result-card').classList.remove('hidden');
+        }
+        
+        function nextQuestion() {
+            currentQuizIndex++;
+            showQuestion();
+        }
+        
+        function showFinalScore() {
+            const percentage = Math.round((score / currentQuizzes.length) * 100);
+            document.getElementById('result-text').textContent = `🎊 Quiz Complete!`;
+            document.getElementById('explanation-text').textContent = 
+                `You scored ${score} out of ${currentQuizzes.length} (${percentage}%)! ${getEncouragement(percentage)}`;
+            
+            document.getElementById('question-card').classList.add('hidden');
+            document.getElementById('result-card').classList.remove('hidden');
+            
+            // Remove next button and add restart button
+            const resultCard = document.getElementById('result-card');
+            resultCard.querySelector('button').textContent = 'Restart Quiz';
+            resultCard.querySelector('button').onclick = () => loadQuizzes('elementary_math');
+        }
+        
+        function getEncouragement(percentage) {
+            if (percentage >= 90) return "Outstanding! 🏆";
+            if (percentage >= 70) return "Excellent work! ⭐";
+            if (percentage >= 50) return "Good job! 👍";
+            return "Keep practicing! 💪";
+        }
+        
+        function showMainMenu() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.querySelector('.subject-grid').classList.remove('hidden');
+        }
+
+        // Load quiz data when page starts
+        loadQuizData();
+    </script>
+</body>
+</html>
