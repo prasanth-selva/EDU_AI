@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "lesson_id": "c11_ch_mole",
+      "grade": 11,
+      "subject": "science",
+      "title": "Mole Concept",
+      "lang": "en",
+      "summary": "A mole represents 6.022×10^23 particles.",
+      "content": "Use molar mass to calculate number of moles. Keep units consistent."
+    },
+    {
+      "lesson_id": "c11_ch_bond",
+      "grade": 11,
+      "subject": "science",
+      "title": "Chemical Bonding",
+      "lang": "en",
+      "summary": "Atoms form bonds to become stable.",
+      "content": "Ionic and covalent bonds are common. Learn with simple examples like NaCl and H2O."
+    }
+  ]
+}

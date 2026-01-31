@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "lesson_id": "c2_en_alph",
+      "grade": 2,
+      "subject": "english",
+      "title": "Alphabet and Sounds",
+      "lang": "en",
+      "summary": "Learn A to Z with simple sounds.",
+      "content": "A is for Apple, B is for Ball, C is for Cat. Repeat the letters with their sounds daily."
+    },
+    {
+      "lesson_id": "c2_en_sentence",
+      "grade": 2,
+      "subject": "english",
+      "title": "Simple Sentences",
+      "lang": "en",
+      "summary": "Make small sentences with is/are.",
+      "content": "Examples: The cat is small. The balls are red. Use short and clear sentences."
+    }
+  ]
+}

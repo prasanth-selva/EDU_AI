@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "lesson_id": "c12_bio_dna",
+      "grade": 12,
+      "subject": "science",
+      "title": "DNA and Genes",
+      "lang": "en",
+      "summary": "DNA carries genetic information.",
+      "content": "Genes are segments of DNA. They control traits like eye color."
+    },
+    {
+      "lesson_id": "c12_bio_ecology",
+      "grade": 12,
+      "subject": "science",
+      "title": "Ecosystem",
+      "lang": "en",
+      "summary": "Living and non-living parts work together.",
+      "content": "Producers, consumers, and decomposers form a food chain. Balance keeps ecosystem healthy."
+    }
+  ]
+}

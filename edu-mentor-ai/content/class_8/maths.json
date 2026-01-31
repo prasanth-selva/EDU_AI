@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "lesson_id": "c8_ma_exponent",
+      "grade": 8,
+      "subject": "maths",
+      "title": "எக்ஸ்போனென்ட்",
+      "lang": "ta",
+      "summary": "அடுக்கு எண் (power) அறிமுகம்.",
+      "content": "2^3 என்பது 2 × 2 × 2 = 8. சிறிய power களை முதலில் கற்றுக்கொள்."
+    },
+    {
+      "lesson_id": "c8_ma_linear",
+      "grade": 8,
+      "subject": "maths",
+      "title": "எளிய சமன்பாடுகள்",
+      "lang": "ta",
+      "summary": "x + 5 = 12 போன்ற சமன்பாடுகள்.",
+      "content": "x + 5 = 12 என்றால் x = 7. ஒரே பக்கத்தில் x மட்டும் இருக்கச் செய்."
+    }
+  ]
+}

@@ -8,10 +8,13 @@
     "dev": "node bot.js"
   },
   "dependencies": {
-    "node-telegram-bot-api": "0.64.0",
-    "express": "4.18.2"
+    "express": "^4.22.1",
+    "node-telegram-bot-api": "^0.63.0"
   },
-  "keywords": ["education", "telegram-bot"],
+  "keywords": [
+    "education",
+    "telegram-bot"
+  ],
   "author": "CodeX Team",
   "license": "MIT"
 }

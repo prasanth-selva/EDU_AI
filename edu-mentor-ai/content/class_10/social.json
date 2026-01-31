@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "lesson_id": "c10_so_india",
+      "grade": 10,
+      "subject": "social",
+      "title": "Indian Constitution",
+      "lang": "en",
+      "summary": "Basics of constitution and rights.",
+      "content": "The Constitution gives fundamental rights and duties. Learn key terms with simple meaning."
+    },
+    {
+      "lesson_id": "c10_so_geo",
+      "grade": 10,
+      "subject": "social",
+      "title": "Resources",
+      "lang": "en",
+      "summary": "Natural and human-made resources.",
+      "content": "Water, soil, and minerals are natural resources. Use them wisely."
+    }
+  ]
+}

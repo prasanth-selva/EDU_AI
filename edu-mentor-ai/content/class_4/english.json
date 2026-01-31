@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "lesson_id": "c4_en_noun",
+      "grade": 4,
+      "subject": "english",
+      "title": "Nouns",
+      "lang": "en",
+      "summary": "A noun is a name of a person, place, or thing.",
+      "content": "Examples: teacher, school, book. Find nouns around you and say them aloud."
+    },
+    {
+      "lesson_id": "c4_en_tense",
+      "grade": 4,
+      "subject": "english",
+      "title": "Simple Present Tense",
+      "lang": "en",
+      "summary": "Actions we do every day.",
+      "content": "I eat, you play, he runs. Use short daily sentences to practice."
+    }
+  ]
+}

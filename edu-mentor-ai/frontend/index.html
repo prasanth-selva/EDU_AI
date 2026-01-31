@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ta">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EDU Mentor AI</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <div class="logo">📚 EDU Mentor AI</div>
+        <div class="tag">ஆஃப்லைன் AI ஆசிரியர் • Tamil Nadu Syllabus</div>
+      </header>
+
+      <section class="panel">
+        <h2>மாணவர் விவரம்</h2>
+        <div class="grid">
+          <div class="field">
+            <label>பெயர்</label>
+            <input id="studentName" placeholder="பெயர்" />
+          </div>
+          <div class="field">
+            <label>தரம்</label>
+            <select id="gradeSelect">
+              <option value="0">LKG</option>
+              <option value="1">UKG</option>
+              <option value="2">1</option>
+              <option value="3">2</option>
+              <option value="4">3</option>
+              <option value="5">4</option>
+              <option value="6">5</option>
+              <option value="7">6</option>
+              <option value="8">7</option>
+              <option value="9">8</option>
+              <option value="10">9</option>
+              <option value="11">10</option>
+              <option value="12">11</option>
+              <option value="13">12</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>மொழி</label>
+            <select id="langSelect">
+              <option value="ta">தமிழ்</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+          <button id="createStudent" class="btn">கற்றலை தொடங்கு</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>AI வகுப்பு (ChatGPT போல)</h2>
+        <div class="filters">
+          <select id="subjectSelect">
+            <option value="">அனைத்து பாடங்கள்</option>
+            <option value="tamil">தமிழ்</option>
+            <option value="english">English</option>
+            <option value="maths">கணக்கு</option>
+            <option value="science">அறிவியல்</option>
+            <option value="social">சமூக அறிவியல்</option>
+            <option value="evs">சுற்றுச்சூழல்</option>
+            <option value="computer">கணினி</option>
+          </select>
+          <button id="loadLessons" class="btn small">பாடங்கள் ஏற்று</button>
+        </div>
+        <div class="chat">
+          <div id="chatMessages" class="chat-messages"></div>
+          <div class="chat-input">
+            <input id="chatInput" placeholder="உங்கள் கேள்வியை எழுதுங்கள்…" />
+            <button id="sendChat" class="btn small">அனுப்பு</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>பாடங்கள்</h2>
+        <ul id="lessonList" class="list"></ul>
+        <div id="lessonContent" class="content"></div>
+        <button id="explainLesson" class="btn">பாடத்தை விளக்கு</button>
+        <div id="aiReply" class="reply"></div>
+      </section>
+
+      <section class="panel">
+        <h2>வினாடி வினா</h2>
+        <div class="filters">
+          <select id="difficultySelect">
+            <option value="easy">எளிது</option>
+            <option value="medium">நடுத்தரம்</option>
+            <option value="hard">கடினம்</option>
+          </select>
+          <button id="generateQuiz" class="btn small">Quiz உருவாக்கு</button>
+        </div>
+        <div id="quizBox"></div>
+        <button id="submitQuiz" class="btn">பதில்களை அனுப்பு</button>
+        <div id="quizResult" class="reply"></div>
+      </section>
+
+      <section class="panel">
+        <h2>முன்னேற்றம்</h2>
+        <button id="loadProgress" class="btn">முன்னேற்றம் பார்க்க</button>
+        <div id="progressBox" class="reply"></div>
+      </section>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

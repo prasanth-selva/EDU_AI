@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "lesson_id": "c4_ma_mul",
+      "grade": 4,
+      "subject": "maths",
+      "title": "பெருக்கல்",
+      "lang": "ta",
+      "summary": "எண்களை பெருக்குதல்.",
+      "content": "எடுத்துக்காட்டு: 7 × 6 = 42. பெருக்கலை repeated addition என்று நினை."
+    },
+    {
+      "lesson_id": "c4_ma_div",
+      "grade": 4,
+      "subject": "maths",
+      "title": "வகுத்தல்",
+      "lang": "ta",
+      "summary": "சமமாகப் பகிர்ந்து வகுத்தல்.",
+      "content": "எடுத்துக்காட்டு: 24 ÷ 6 = 4. 24 ஐ 6 குழுக்களாகப் பிரி."
+    }
+  ]
+}

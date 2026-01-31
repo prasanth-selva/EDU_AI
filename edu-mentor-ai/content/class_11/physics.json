@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "lesson_id": "c11_ph_vectors",
+      "grade": 11,
+      "subject": "science",
+      "title": "Vectors",
+      "lang": "en",
+      "summary": "Vectors have magnitude and direction.",
+      "content": "Displacement and velocity are vectors. Add vectors using head-to-tail method."
+    },
+    {
+      "lesson_id": "c11_ph_kinematics",
+      "grade": 11,
+      "subject": "science",
+      "title": "Kinematics",
+      "lang": "en",
+      "summary": "Study of motion without forces.",
+      "content": "Equations: v = u + at, s = ut + 1/2 at^2. Use with care."
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "lesson_id": "c13_ph_motion",
+      "grade": 13,
+      "subject": "science",
+      "title": "Motion Basics",
+      "lang": "en",
+      "summary": "Displacement, velocity, and acceleration basics.",
+      "content": "Velocity is displacement per time. Acceleration is change in velocity per time. Use simple formulas and units carefully."
+    },
+    {
+      "lesson_id": "c13_ph_current",
+      "grade": 13,
+      "subject": "science",
+      "title": "Electric Current",
+      "lang": "en",
+      "summary": "Ohm's Law: V = IR.",
+      "content": "Voltage equals current times resistance. Keep units: V in volts, I in amperes, R in ohms."
+    }
+  ]
+}

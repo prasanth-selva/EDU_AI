@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "lesson_id": "c12_ma_calculus",
+      "grade": 12,
+      "subject": "maths",
+      "title": "Differentiation Basics",
+      "lang": "en",
+      "summary": "Derivative gives rate of change.",
+      "content": "If y = x^2, dy/dx = 2x. Use simple power rule first."
+    },
+    {
+      "lesson_id": "c12_ma_prob",
+      "grade": 12,
+      "subject": "maths",
+      "title": "Probability",
+      "lang": "en",
+      "summary": "Chance of an event.",
+      "content": "Probability = favorable outcomes / total outcomes. Keep it between 0 and 1."
+    }
+  ]
+}

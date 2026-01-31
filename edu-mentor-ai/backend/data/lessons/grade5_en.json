@@ -1,0 +1,24 @@
+[
+  {
+    "lesson_id": "en-5-science-solar",
+    "grade": 5,
+    "subject": "science",
+    "title": "Solar System",
+    "lang": "en",
+    "summary": "Planets move around the Sun.",
+    "content": "The Sun is at the center. Planets like Earth go around the Sun. This is called orbit."
+  },
+  {
+    "lesson_id": "en-5-maths-fractions",
+    "grade": 5,
+    "subject": "maths",
+    "title": "Fractions",
+    "lang": "en",
+    "summary": "A fraction shows a part of a whole.",
+    "content": "If a pizza is cut into 4 equal parts, one part is 1/4."
+  },
+  {
+    "lesson_id": "en-5-english-nouns",
+    "grade": 5,
+    "subject": "english",
+    "title": "Nouns",

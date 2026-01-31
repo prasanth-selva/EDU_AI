@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "lesson_id": "c13_ma_limits",
+      "grade": 13,
+      "subject": "maths",
+      "title": "Limits Basics",
+      "lang": "en",
+      "summary": "Understand value as x approaches a point.",
+      "content": "Limit of (x^2 - 1)/(x - 1) as x→1 is 2. Simplify first."
+    },
+    {
+      "lesson_id": "c13_ma_integral",
+      "grade": 13,
+      "subject": "maths",
+      "title": "Integration Basics",
+      "lang": "en",
+      "summary": "Integration is reverse of differentiation.",
+      "content": "Integral of 2x is x^2 + C. Use basic rules only."
+    }
+  ]
+}

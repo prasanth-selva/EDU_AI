@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "lesson_id": "c5_ma_fractions",
+      "grade": 5,
+      "subject": "maths",
+      "title": "பாகங்கள்",
+      "lang": "ta",
+      "summary": "பாகங்களை ஒப்பிடுதல் மற்றும் எளிமைப்படுத்துதல்.",
+      "content": "1/2 மற்றும் 2/4 சமம். எளிமைப்படுத்த numerator, denominator ஐ பகுத்து குறை."
+    },
+    {
+      "lesson_id": "c5_ma_decimals",
+      "grade": 5,
+      "subject": "maths",
+      "title": "தசமங்கள்",
+      "lang": "ta",
+      "summary": "தசம எண்களைப் படித்து எழுதுதல்.",
+      "content": "2.5 என்பது இரண்டு புள்ளி ஐந்து. பணத்தில் ரூ.2.50 என்ற போல நினை."
+    }
+  ]
+}

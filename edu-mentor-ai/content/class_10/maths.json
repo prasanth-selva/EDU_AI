@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "lesson_id": "c10_ma_linear",
+      "grade": 10,
+      "subject": "maths",
+      "title": "Linear Equations",
+      "lang": "en",
+      "summary": "Solve ax + b = 0 type equations.",
+      "content": "Example: 2x + 4 = 0. Move 4 to the other side: 2x = -4, so x = -2."
+    },
+    {
+      "lesson_id": "c10_ma_geometry",
+      "grade": 10,
+      "subject": "maths",
+      "title": "Geometry Basics",
+      "lang": "en",
+      "summary": "Angles in a triangle sum to 180°.",
+      "content": "If a triangle has angles 60° and 50°, the third angle is 180° - 110° = 70°."
+    }
+  ]
+}

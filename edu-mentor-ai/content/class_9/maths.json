@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "lesson_id": "c9_ma_algebra",
+      "grade": 9,
+      "subject": "maths",
+      "title": "Algebra Basics",
+      "lang": "en",
+      "summary": "Use symbols to represent numbers.",
+      "content": "Example: x + 5 = 12, so x = 7. Practice simple equations."
+    },
+    {
+      "lesson_id": "c9_ma_triangles",
+      "grade": 9,
+      "subject": "maths",
+      "title": "Triangles",
+      "lang": "en",
+      "summary": "Types of triangles and their angles.",
+      "content": "Sum of angles in a triangle is 180°. Identify right, acute, and obtuse triangles."
+    }
+  ]
+}
