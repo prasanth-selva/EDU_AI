@@ -6,7 +6,8 @@ from fastapi import APIRouter
 
 from ..schemas import ExplainRequest, ExplainResponse, ChatRequest, ChatResponse
 from ..services.content_engine import ContentEngine
-from ..services.ollama_client import ollama_generate
+from ..services.ollama_client_enhanced import ollama_generate, check_ollama_health
+from ..services.rag_engine import get_rag_engine
 from ..utils.lang import pick_lang
 
 router = APIRouter(prefix="/ai", tags=["ai"])
@@ -83,7 +84,14 @@ def explain(req: ExplainRequest):
         "Answer clearly and include the final answer after 'பதில்:' if it is a direct question."
     )
 
-    response, model = ollama_generate(system_prompt, user_prompt, grade=req.grade)
+    response, model = ollama_generate(
+        system_prompt, 
+        user_prompt, 
+        grade=req.grade,
+        subject=req.subject,
+        lang=req.language,
+        use_rag=True
+    )
     if not response.strip():
         response = pick_lang(
             "இப்போது AI கிடைக்கவில்லை. எளிய விளக்கம்: " + user_text[:200],
@@ -97,6 +105,37 @@ def explain(req: ExplainRequest):
 
 @router.post("/chat", response_model=ChatResponse)
 def chat(req: ChatRequest):
+    if not req.message.strip():
+        reply = pick_lang("கேள்வி கேளுங்கள்.", "Please ask a question.", req.language)
+        return ChatResponse(reply=reply, model="offline")
+
+    system_prompt = _load_system_prompt(req.language)
+    
+    # Use RAG-enhanced generation
+    response, model = ollama_generate(
+        system_prompt,
+        req.message,
+        grade=req.grade,
+        subject=req.subject,
+        lang=req.language,
+        use_rag=True
+    )
+
+    if not response.strip():
+        response = pick_lang(
+            "மன்னிக்கவும், இப்போது பதில் தர முடியவில்லை.",
+            "Sorry, I cannot answer right now.",
+            req.language,
+        )
+        model = "offline"
+
+    return ChatResponse(reply=response.strip(), model=model)
+
+
+@router.get("/health")
+def ai_health():
+    """Check AI system health"""
+    return check_ollama_health()
     if not req.message.strip():
         return ChatResponse(reply="", model="offline", used_subject=req.subject, used_grade=req.grade)
 

@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Offline AI Tutor for Tamil Nadu Students (LKG-6th)" />
+  <meta name="theme-color" content="#4CAF50" />
+  <title>📚 EDU Mentor AI - ஆஃப்லைன் AI ஆசிரியர்</title>
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>📚</text></svg>" />
+  
+  <link rel="stylesheet" href="styles-child.css" />
+  
+  <!-- Preload Tamil fonts for better performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-content">
+        <div class="logo-section">
+          <span class="logo-icon">📚</span>
+          <div class="logo-text">
+            <h1>EDU Mentor AI</h1>
+            <p class="tagline">ஆஃப்லைன் AI ஆசிரியர் • TN Syllabus</p>
+          </div>
+        </div>
+        <div class="status-indicator" id="statusIndicator">
+          <span class="status-dot offline"></span>
+          <span class="status-text">Loading...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Student Profile Section -->
+    <section class="card student-card">
+      <div class="card-header">
+        <h2>👤 மாணவர் விவரம்</h2>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="studentName">📝 உங்கள் பெயர்</label>
+            <input 
+              type="text" 
+              id="studentName" 
+              class="input-field"
+              placeholder="உங்கள் பெயரை எழுதுங்கள்" 
+              maxlength="50"
+            />
+          </div>
+          
+          <div class="form-group">
+            <label for="gradeSelect">📖 தரம் (Class)</label>
+            <select id="gradeSelect" class="select-field">
+              <option value="0">🧒 LKG</option>
+              <option value="1">🧒 UKG</option>
+              <option value="2">📘 1st Standard</option>
+              <option value="3">📘 2nd Standard</option>
+              <option value="4">📗 3rd Standard</option>
+              <option value="5">📗 4th Standard</option>
+              <option value="6">📙 5th Standard</option>
+              <option value="7">📙 6th Standard</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="langSelect">🗣️ மொழி (Language)</label>
+            <select id="langSelect" class="select-field">
+              <option value="ta">தமிழ் (Tamil)</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+          
+          <div class="form-group full-width">
+            <button id="startLearning" class="btn btn-primary btn-large">
+              🚀 கற்றலை தொடங்கு • Start Learning
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Tabs -->
+    <div class="tabs-container">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="chat">💬 AI Chat</button>
+        <button class="tab-btn" data-tab="lessons">📚 Lessons</button>
+        <button class="tab-btn" data-tab="quiz">🎯 Quiz</button>
+        <button class="tab-btn" data-tab="progress">📊 Progress</button>
+      </div>
+
+      <!-- Tab 1: AI Chat -->
+      <div class="tab-content active" id="chatTab">
+        <section class="card chat-card">
+          <div class="card-header">
+            <h2>💬 AI ஆசிரியருடன் பேசுங்கள்</h2>
+            <div class="subject-filter">
+              <select id="subjectSelect" class="select-field-small">
+                <option value="">அனைத்து பாடங்கள் (All)</option>
+                <option value="tamil">தமிழ் (Tamil)</option>
+                <option value="english">English</option>
+                <option value="maths">கணக்கு (Maths)</option>
+                <option value="science">அறிவியல் (Science)</option>
+                <option value="evs">சுற்றுச்சூழல் (EVS)</option>
+                <option value="social">சமூக அறிவியல் (Social)</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <!-- Chat Messages Area -->
+            <div class="chat-container" id="chatMessages">
+              <div class="message assistant welcome-message">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                  <p>வணக்கம்! நான் உங்கள் AI ஆசிரியர். 😊</p>
+                  <p>Hello! I'm your AI teacher.</p>
+                  <p>எனக்கு கேள்விகள் கேளுங்கள் • Ask me questions!</p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Chat Input Area -->
+            <div class="chat-input-container">
+              <input 
+                type="text" 
+                id="chatInput" 
+                class="chat-input"
+                placeholder="உங்கள் கேள்வியை இங்கே எழுதுங்கள்... Ask your question here..."
+                maxlength="500"
+              />
+              <button id="sendChat" class="btn btn-send">
+                <span class="send-icon">📤</span>
+                <span class="send-text">அனுப்பு</span>
+              </button>
+            </div>
+            
+            <!-- Quick Question Buttons -->
+            <div class="quick-questions">
+              <button class="quick-btn" data-question="என்ன படிக்கலாம்?">என்ன படிக்கலாம்?</button>
+              <button class="quick-btn" data-question="What should I learn today?">What to learn?</button>
+              <button class="quick-btn" data-question="கணக்கு சொல்லு">Maths 🧮</button>
+              <button class="quick-btn" data-question="கதை சொல்லு">Story 📖</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Tab 2: Lessons -->
+      <div class="tab-content" id="lessonsTab">
+        <section class="card lessons-card">
+          <div class="card-header">
+            <h2>📚 பாடங்கள் (Lessons)</h2>
+            <button id="loadLessons" class="btn btn-secondary">
+              🔄 பாடங்களை ஏற்று • Load Lessons
+            </button>
+          </div>
+          
+          <div class="card-body">
+            <div id="lessonList" class="lesson-grid"></div>
+            
+            <div id="lessonContent" class="lesson-detail hidden">
+              <div class="lesson-detail-header">
+                <h3 id="lessonTitle"></h3>
+                <button id="closeLesson" class="btn btn-small">✖️ Close</button>
+              </div>
+              <div id="lessonBody" class="lesson-body"></div>
+              <div class="lesson-actions">
+                <button id="explainLesson" class="btn btn-primary">
+                  🤖 AI விளக்கம் • AI Explanation
+                </button>
+                <button id="lessonQuiz" class="btn btn-accent">
+                  🎯 Quiz எடு • Take Quiz
+                </button>
+              </div>
+              <div id="aiReply" class="ai-reply"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Tab 3: Quiz -->
+      <div class="tab-content" id="quizTab">
+        <section class="card quiz-card">
+          <div class="card-header">
+            <h2>🎯 வினாடி வினா (Quiz)</h2>
+            <div class="quiz-controls">
+              <select id="difficultySelect" class="select-field-small">
+                <option value="easy">😊 எளிது (Easy)</option>
+                <option value="medium">😐 நடுத்தரம் (Medium)</option>
+                <option value="hard">😤 கடினம் (Hard)</option>
+              </select>
+              <button id="generateQuiz" class="btn btn-accent">
+                ✨ Quiz உருவாக்கு • Generate Quiz
+              </button>
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <div id="quizBox" class="quiz-container"></div>
+            <div id="quizActions" class="quiz-actions hidden">
+              <button id="submitQuiz" class="btn btn-primary btn-large">
+                ✅ பதில்களை அனுப்பு • Submit Answers
+              </button>
+            </div>
+            <div id="quizResult" class="quiz-result"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Tab 4: Progress -->
+      <div class="tab-content" id="progressTab">
+        <section class="card progress-card">
+          <div class="card-header">
+            <h2>📊 உங்கள் முன்னேற்றம் (Progress)</h2>
+          </div>
+          
+          <div class="card-body">
+            <div class="progress-stats">
+              <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-value" id="lessonsCompleted">0</div>
+                <div class="stat-label">பாடங்கள் முடிந்தது</div>
+              </div>
+              
+              <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-value" id="quizzesCompleted">0</div>
+                <div class="stat-label">Quiz முடிந்தது</div>
+              </div>
+              
+              <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-value" id="averageScore">0%</div>
+                <div class="stat-label">சராசரி மதிப்பெண்</div>
+              </div>
+              
+              <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-value" id="streakDays">0</div>
+                <div class="stat-label">தொடர் நாட்கள்</div>
+              </div>
+            </div>
+            
+            <div class="recent-activity">
+              <h3>📜 சமீபத்திய செயல்பாடுகள்</h3>
+              <div id="activityList" class="activity-list"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>🌟 Made with ❤️ for Tamil Nadu Students</p>
+      <p class="footer-note">
+        ⚡ Offline-First • 🔒 Safe & Private • 🎓 Samacheer Kalvi
+      </p>
+    </footer>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay hidden" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p>Loading...</p>
+  </div>
+
+  <!-- Scripts -->
+  <script src="app-child.js"></script>
+  
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('✅ Service Worker registered'))
+          .catch(err => console.log('❌ Service Worker registration failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>

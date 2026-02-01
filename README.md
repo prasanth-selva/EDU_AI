@@ -2,6 +2,21 @@
 
 EDU MENTOR AI is an offline-first, low-end-device-friendly AI tutor for Tamil Nadu State Board students (LKG–12). It runs fully offline after installation and supports Tamil (primary) and English (secondary).
 
+## 🚀 Quick Start (TL;DR)
+
+```bash
+# 1. Setup (first time only)
+chmod +x setup.sh run.sh
+./setup.sh
+
+# 2. Run
+./run.sh
+
+# 3. Open browser: http://localhost:8000
+```
+
+📖 **For detailed instructions, see [QUICKSTART.md](./QUICKSTART.md)**
+
 ## 1) System Architecture (3 Components)
 
 ### A) Offline AI Tutor (Local)

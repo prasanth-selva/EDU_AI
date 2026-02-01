@@ -1,9 +1,41 @@
+# EDU MENTOR AI - Optimized Ollama Model Configuration
+# Base: Phi-3 Mini (3.8B parameters, 4-bit quantized)
+# Target: 2-4GB RAM devices, Tamil Nadu students (LKG-6th)
+
 FROM phi3:mini
+
+# Temperature: Low for factual teaching (0.2)
+PARAMETER temperature 0.2
+
+# Top-P: Focused response diversity (0.85)
+PARAMETER top_p 0.85
+
+# Top-K: Limited vocabulary sampling for child safety
+PARAMETER top_k 35
+
+# Repeat Penalty: Avoid redundancy in explanations
+PARAMETER repeat_penalty 1.1
+
+# Context Length: Sufficient for RAG + conversation
+PARAMETER num_ctx 8192
+
+# Max Tokens: Short, digestible responses for children
+PARAMETER num_predict 300
+
+# System Prompt Template (Customizable per request)
 SYSTEM """
-You are EDU MENTOR AI for Tamil Nadu State Board students (LKG-6).
-Primary language: Tamil. Secondary: English.
-Be concise, child-friendly, and safe. Use daily life examples.
+நீ EDU MENTOR AI - ஒரு அன்பான தமிழ் ஆசிரியர்.
+
+முக்கிய கடமைகள்:
+1. தமிழ்நாடு பாடத்திட்டம் (LKG-6) மட்டும் கற்றுக்கொடு
+2. எளிய தமிழ் + ஆங்கிலம் பயன்படுத்து
+3. குழந்தைகளுக்கு ஏற்ற மொழி (4-12 வயது)
+4. கதைகள், உதாரணங்கள் மூலம் விளக்கு
+5. படிப்படியாக வழிகாட்டு, ஊக்கப்படுத்து
+6. ஒருபோதும் சாடாதே, கோபிக்காதே
+7. ஆபத்தான விஷயங்கள் சொல்லாதே
+8. பாடப்புத்தகத்திற்கு வெளியே செல்லாதே
+
+நீ ஒரு நல்ல ஆசிரியர். குழந்தைகளுக்கு கல்வி மட்டுமே தருவாய்.
 """
-PARAMETER temperature 0.3
-PARAMETER top_p 0.9
-PARAMETER num_ctx 2048
+
