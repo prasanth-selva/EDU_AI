@@ -19,11 +19,11 @@ OLLAMA_TOP_P = float(os.getenv("OLLAMA_TOP_P", "0.85"))
 OLLAMA_TOP_K = int(os.getenv("OLLAMA_TOP_K", "35"))
 OLLAMA_NUM_PREDICT = int(os.getenv("OLLAMA_NUM_PREDICT", "300"))
 
-# Grade-specific model selection
-MODEL_LKG_UKG = os.getenv("MODEL_LKG_UKG", "gemma2:2b-instruct")  # Ultra simple
-MODEL_GRADE_1_3 = os.getenv("MODEL_GRADE_1_3", "phi3:mini")  # Primary
-MODEL_GRADE_4_6 = os.getenv("MODEL_GRADE_4_6", "phi3:mini")  # Upper primary
-MODEL_DEFAULT = os.getenv("OLLAMA_MODEL", "phi3:mini")
+# Grade-specific model selection (Using Gemma:2b - Better Instruction Following)
+MODEL_LKG_UKG = os.getenv("MODEL_LKG_UKG", "gemma:2b")  # Google's instruction model
+MODEL_GRADE_1_3 = os.getenv("MODEL_GRADE_1_3", "gemma:2b")  # Consistent across all
+MODEL_GRADE_4_6 = os.getenv("MODEL_GRADE_4_6", "gemma:2b")  # Same model
+MODEL_DEFAULT = os.getenv("OLLAMA_MODEL", "gemma:2b")
 
 # Safety filters
 UNSAFE_PATTERNS = [

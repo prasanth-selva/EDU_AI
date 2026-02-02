@@ -1,26 +1,26 @@
 # EDU MENTOR AI - Optimized Ollama Model Configuration
-# Base: Phi-3 Mini (3.8B parameters, 4-bit quantized)
-# Target: 2-4GB RAM devices, Tamil Nadu students (LKG-6th)
+# Base: Gemma:2b - Google's instruction-tuned model
+# Better for educational Q&A than Qwen
 
-FROM phi3:mini
+FROM gemma:2b
 
-# Temperature: Low for factual teaching (0.2)
-PARAMETER temperature 0.2
+# Temperature: Very low for direct, factual answers
+PARAMETER temperature 0.1
 
-# Top-P: Focused response diversity (0.85)
-PARAMETER top_p 0.85
+# Top-P: Highly focused (only best answers)
+PARAMETER top_p 0.7
 
-# Top-K: Limited vocabulary sampling for child safety
-PARAMETER top_k 35
+# Top-K: Very limited for precise answers
+PARAMETER top_k 20
 
-# Repeat Penalty: Avoid redundancy in explanations
-PARAMETER repeat_penalty 1.1
+# Repeat Penalty: Prevent repetition
+PARAMETER repeat_penalty 1.2
 
-# Context Length: Sufficient for RAG + conversation
-PARAMETER num_ctx 8192
+# Context Length: Small for focused responses
+PARAMETER num_ctx 2048
 
-# Max Tokens: Short, digestible responses for children
-PARAMETER num_predict 300
+# Max Tokens: Very short direct answers only
+PARAMETER num_predict 50
 
 # System Prompt Template (Customizable per request)
 SYSTEM """

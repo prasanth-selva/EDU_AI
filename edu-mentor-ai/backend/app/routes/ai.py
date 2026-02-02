@@ -111,14 +111,14 @@ def chat(req: ChatRequest):
 
     system_prompt = _load_system_prompt(req.language)
     
-    # Use RAG-enhanced generation
+    # Temporarily disable RAG for faster startup
     response, model = ollama_generate(
         system_prompt,
         req.message,
         grade=req.grade,
         subject=req.subject,
         lang=req.language,
-        use_rag=True
+        use_rag=False  # Disabled for speed
     )
 
     if not response.strip():
