@@ -3,4 +3,7 @@ node_modules/
 .DS_Store
 *.log
 .nyc_output/
-coverage/
+coverage/# Large files
+*.zip
+*.pdf
+data/pdfs/
