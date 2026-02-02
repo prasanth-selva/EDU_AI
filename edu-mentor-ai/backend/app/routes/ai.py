@@ -111,14 +111,14 @@ def chat(req: ChatRequest):
 
     system_prompt = _load_system_prompt(req.language)
     
-    # Temporarily disable RAG for faster startup
+    # RAG disabled - enable ONLY after indexing your PDFs
     response, model = ollama_generate(
         system_prompt,
         req.message,
         grade=req.grade,
         subject=req.subject,
         lang=req.language,
-        use_rag=False  # Disabled for speed
+        use_rag=False  # Keep disabled until you add PDFs
     )
 
     if not response.strip():
