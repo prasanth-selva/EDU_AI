@@ -19,11 +19,12 @@ OLLAMA_TOP_P = float(os.getenv("OLLAMA_TOP_P", "0.85"))
 OLLAMA_TOP_K = int(os.getenv("OLLAMA_TOP_K", "35"))
 OLLAMA_NUM_PREDICT = int(os.getenv("OLLAMA_NUM_PREDICT", "300"))
 
-# Grade-specific model selection (Using Gemma:2b - Better Instruction Following)
-MODEL_LKG_UKG = os.getenv("MODEL_LKG_UKG", "gemma:2b")  # Google's instruction model
-MODEL_GRADE_1_3 = os.getenv("MODEL_GRADE_1_3", "gemma:2b")  # Consistent across all
-MODEL_GRADE_4_6 = os.getenv("MODEL_GRADE_4_6", "gemma:2b")  # Same model
-MODEL_DEFAULT = os.getenv("OLLAMA_MODEL", "gemma:2b")
+# Grade-specific model selection (Using qwen:1.8b - Fastest Model)
+MODEL_LKG_UKG = os.getenv("MODEL_LKG_UKG", "qwen:1.8b")  # Fastest for young kids
+MODEL_GRADE_1_3 = os.getenv("MODEL_GRADE_1_3", "qwen:1.8b")  # Fast and efficient
+MODEL_GRADE_4_6 = os.getenv("MODEL_GRADE_4_6", "qwen:1.8b")  # Same for all
+MODEL_DEFAULT = os.getenv("OLLAMA_MODEL", "qwen:1.8b")
+
 
 # Safety filters
 UNSAFE_PATTERNS = [

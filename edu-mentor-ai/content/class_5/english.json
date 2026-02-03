@@ -1,0 +1,40 @@
+{
+    "items": [
+        {
+            "lesson_id": "c5_en_prose1",
+            "grade": 5,
+            "subject": "english",
+            "title": "The Honest Woodcutter",
+            "lang": "en",
+            "summary": "A story about honesty and its rewards.",
+            "content": "A woodcutter dropped his axe in the river. A fairy appeared with a gold axe. He said 'That is not mine.' She gave him a silver axe. He said 'That is not mine either.' She returned his iron axe and rewarded him for honesty."
+        },
+        {
+            "lesson_id": "c5_en_poem1",
+            "grade": 5,
+            "subject": "english",
+            "title": "Twinkle Twinkle Little Star",
+            "lang": "en",
+            "summary": "A classic nursery rhyme about stars.",
+            "content": "Twinkle twinkle little star, how I wonder what you are. Up above the world so high, like a diamond in the sky."
+        },
+        {
+            "lesson_id": "c5_en_grammar1",
+            "grade": 5,
+            "subject": "english",
+            "title": "Nouns",
+            "lang": "en",
+            "summary": "Understanding nouns and their types.",
+            "content": "A noun is a word that names a person, place, thing, or animal. Examples: Ram (person), Chennai (place), book (thing), dog (animal). Proper nouns start with capital letters."
+        },
+        {
+            "lesson_id": "c5_en_grammar2",
+            "grade": 5,
+            "subject": "english",
+            "title": "Verbs",
+            "lang": "en",
+            "summary": "Understanding action words.",
+            "content": "A verb is an action word. It tells what someone or something does. Examples: run, jump, eat, sleep, read, write. Every sentence needs a verb."
+        }
+    ]
+}

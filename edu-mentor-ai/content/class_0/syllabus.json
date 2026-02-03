@@ -1,0 +1,58 @@
+{
+    "items": [
+        {
+            "lesson_id": "lkg_evs_family",
+            "grade": 0,
+            "subject": "evs",
+            "title": "என் குடும்பம்",
+            "lang": "ta",
+            "summary": "குடும்ப உறுப்பினர்களைப் பற்றி அறிதல்.",
+            "content": "அப்பா, அம்மா, தாத்தா, பாட்டி, அண்ணன், தங்கை. இவர்கள் அனைவரும் என் குடும்பம். நாங்கள் ஒன்றாக வாழ்கிறோம். ஒருவருக்கொருவர் உதவுகிறோம்."
+        },
+        {
+            "lesson_id": "lkg_evs_body",
+            "grade": 0,
+            "subject": "evs",
+            "title": "என் உடல் பாகங்கள்",
+            "lang": "ta",
+            "summary": "உடல் பாகங்களின் பெயர்கள்.",
+            "content": "தலை, கண், காது, மூக்கு, வாய், கை, கால். இவை என் உடல் பாகங்கள். கண்களால் பார்க்கிறேன். காதால் கேட்கிறேன்."
+        },
+        {
+            "lesson_id": "lkg_evs_colors",
+            "grade": 0,
+            "subject": "evs",
+            "title": "நிறங்கள்",
+            "lang": "ta",
+            "summary": "அடிப்படை நிறங்களை அறிதல்.",
+            "content": "சிவப்பு, நீலம், பச்சை, மஞ்சள், ஊதா, ஆரஞ்சு. வானம் நீலம். இலை பச்சை. சூரியன் மஞ்சள்."
+        },
+        {
+            "lesson_id": "lkg_maths_numbers",
+            "grade": 0,
+            "subject": "maths",
+            "title": "எண்கள் 1-10",
+            "lang": "ta",
+            "summary": "1 முதல் 10 வரை எண்ணுதல்.",
+            "content": "ஒன்று, இரண்டு, மூன்று, நான்கு, ஐந்து, ஆறு, ஏழு, எட்டு, ஒன்பது, பத்து. விரல்களால் எண்ணு."
+        },
+        {
+            "lesson_id": "lkg_tamil_uyir",
+            "grade": 0,
+            "subject": "tamil",
+            "title": "உயிர் எழுத்துக்கள்",
+            "lang": "ta",
+            "summary": "தமிழ் உயிர் எழுத்துக்களை அறிதல்.",
+            "content": "அ ஆ இ ஈ உ ஊ எ ஏ ஐ ஒ ஓ ஔ. 12 உயிர் எழுத்துக்கள். அம்மா, ஆப்பிள், இலை."
+        },
+        {
+            "lesson_id": "lkg_english_abc",
+            "grade": 0,
+            "subject": "english",
+            "title": "A B C D",
+            "lang": "en",
+            "summary": "Learning the English alphabet.",
+            "content": "A for Apple, B for Ball, C for Cat, D for Dog, E for Elephant. The alphabet has 26 letters from A to Z."
+        }
+    ]
+}

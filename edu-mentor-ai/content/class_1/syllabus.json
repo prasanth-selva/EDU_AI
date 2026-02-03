@@ -1,0 +1,58 @@
+{
+    "items": [
+        {
+            "lesson_id": "ukg_evs_plants",
+            "grade": 1,
+            "subject": "evs",
+            "title": "செடிகளும் மரங்களும்",
+            "lang": "ta",
+            "summary": "செடிகள் மற்றும் மரங்களைப் பற்றி அறிதல்.",
+            "content": "செடி சிறியது. மரம் பெரியது. செடிகள் வளர்கின்றன. நீர் ஊற்றினால் செழிக்கும். பூக்கள், கனிகள் தரும்."
+        },
+        {
+            "lesson_id": "ukg_evs_animals",
+            "grade": 1,
+            "subject": "evs",
+            "title": "விலங்குகள்",
+            "lang": "ta",
+            "summary": "வீட்டு விலங்குகள் மற்றும் காட்டு விலங்குகள்.",
+            "content": "நாய், பூனை, பசு வீட்டு விலங்குகள். சிங்கம், புலி, யானை காட்டு விலங்குகள். பசு பால் தருகிறது. நாய் காவலி."
+        },
+        {
+            "lesson_id": "ukg_maths_shapes",
+            "grade": 1,
+            "subject": "maths",
+            "title": "வடிவங்கள்",
+            "lang": "ta",
+            "summary": "அடிப்படை வடிவங்களை அறிதல்.",
+            "content": "வட்டம், சதுரம், செவ்வகம், முக்கோணம். பந்து வட்டம். கதவு செவ்வகம். புத்தகம் சதுரம்."
+        },
+        {
+            "lesson_id": "ukg_maths_numbers20",
+            "grade": 1,
+            "subject": "maths",
+            "title": "எண்கள் 11-20",
+            "lang": "ta",
+            "summary": "11 முதல் 20 வரை எண்ணுதல்.",
+            "content": "பதினொன்று, பன்னிரண்டு, பதின்மூன்று, பதினான்கு, பதினைந்து, பதினாறு, பதினேழு, பதினெட்டு, பத்தொன்பது, இருபது."
+        },
+        {
+            "lesson_id": "ukg_tamil_mei",
+            "grade": 1,
+            "subject": "tamil",
+            "title": "மெய் எழுத்துக்கள்",
+            "lang": "ta",
+            "summary": "தமிழ் மெய் எழுத்துக்களை அறிதல்.",
+            "content": "க், ங், ச், ஞ், ட், ண், த், ந், ப், ம், ய், ர், ல், வ், ழ், ள், ற், ன். 18 மெய் எழுத்துக்கள்."
+        },
+        {
+            "lesson_id": "ukg_english_words",
+            "grade": 1,
+            "subject": "english",
+            "title": "Simple Words",
+            "lang": "en",
+            "summary": "Learning simple three-letter words.",
+            "content": "Cat, Bat, Rat, Mat. Dog, Log, Fog. Sun, Run, Fun. These are CVC words (Consonant-Vowel-Consonant)."
+        }
+    ]
+}

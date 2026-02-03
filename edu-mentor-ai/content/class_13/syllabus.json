@@ -1,0 +1,67 @@
+{
+    "items": [
+        {
+            "lesson_id": "c12_maths_matrices",
+            "grade": 13,
+            "subject": "maths",
+            "title": "அணிகள் (Matrices)",
+            "lang": "ta",
+            "summary": "அணிகளின் வகைகள் மற்றும் செயல்பாடுகள்.",
+            "content": "அணி என்பது எண்களின் செவ்வக அமைப்பு. வரிசை × நிரல் = வகை. கூட்டல், கழித்தல், பெருக்கல். A × B ≠ B × A. |A| = அணிக்கோவை (determinant). A⁻¹ = நேர்மாறு அணி."
+        },
+        {
+            "lesson_id": "c12_maths_calculus",
+            "grade": 13,
+            "subject": "maths",
+            "title": "வகையீடு (Differentiation)",
+            "lang": "ta",
+            "summary": "வகையீட்டின் அடிப்படை விதிகள்.",
+            "content": "d/dx(xⁿ) = nxⁿ⁻¹. d/dx(sin x) = cos x. d/dx(cos x) = -sin x. d/dx(eˣ) = eˣ. d/dx(log x) = 1/x. பெருக்கல் விதி: d/dx(uv) = u'v + uv'."
+        },
+        {
+            "lesson_id": "c12_maths_integration",
+            "grade": 13,
+            "subject": "maths",
+            "title": "தொகையீடு (Integration)",
+            "lang": "ta",
+            "summary": "தொகையீட்டின் அடிப்படை சூத்திரங்கள்.",
+            "content": "∫xⁿdx = xⁿ⁺¹/(n+1) + C. ∫sin x dx = -cos x + C. ∫cos x dx = sin x + C. ∫eˣdx = eˣ + C. ∫1/x dx = log|x| + C."
+        },
+        {
+            "lesson_id": "c12_physics_laws",
+            "grade": 13,
+            "subject": "science",
+            "title": "நியூட்டன் விதிகள்",
+            "lang": "ta",
+            "summary": "இயக்க விதிகள்.",
+            "content": "1. நிலைம விதி: புற விசை இல்லாவிட்டால் பொருள் நிலையில் இருக்கும். 2. F = ma (விசை = நிறை × முடுக்கம்). 3. ஒவ்வொரு செயலுக்கும் சம எதிர் எதிர்வினை உள்ளது."
+        },
+        {
+            "lesson_id": "c12_physics_electro",
+            "grade": 13,
+            "subject": "science",
+            "title": "மின்காந்தவியல்",
+            "lang": "ta",
+            "summary": "மின்காந்த தூண்டல்.",
+            "content": "ஃபாரடே விதி: மாறும் காந்தப்புலம் மின்னழுத்தத்தை தூண்டும். லென்ஸ் விதி: தூண்டப்பட்ட மின்னோட்டம் மாற்றத்தை எதிர்க்கும். e = -dΦ/dt."
+        },
+        {
+            "lesson_id": "c12_chemistry_organic",
+            "grade": 13,
+            "subject": "science",
+            "title": "கரிம வேதியியல் அடிப்படை",
+            "lang": "ta",
+            "summary": "முக்கிய தொகுதிகள் மற்றும் வினைகள்.",
+            "content": "ஆல்கஹால் (-OH): எத்தனால் C₂H₅OH. ஆல்டிஹைடு (-CHO): ஃபார்மால்டிஹைடு. கீட்டோன் (C=O): அசிட்டோன். கார்பாக்சிலிக் அமிலம் (-COOH): அசிட்டிக் அமிலம்."
+        },
+        {
+            "lesson_id": "c12_social_economics",
+            "grade": 13,
+            "subject": "social",
+            "title": "இந்தியப் பொருளாதாரம்",
+            "lang": "ta",
+            "summary": "இந்திய பொருளாதாரத்தின் அமைப்பு.",
+            "content": "கலப்புப் பொருளாதாரம். GDP = நாட்டின் மொத்த உற்பத்தி. வேளாண்மை 15%, தொழில் 25%, சேவை 60%. ஐந்தாண்டுத் திட்டங்கள். நீதி ஆயோக் (NITI Aayog)."
+        }
+    ]
+}
