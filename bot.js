@@ -1,12 +1,13 @@
 const TelegramBot = require('node-telegram-bot-api');
 const express = require('express');
 const fs = require('fs');
+require('dotenv').config();
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// ⚠️ REPLACE WITH YOUR ACTUAL BOT TOKEN
-const TOKEN = '8502164066:AAEWV5X6pHuXmMLo2l3gfQXEFAa2m78TUE4';
+// Load token from .env file
+const TOKEN = process.env.BOT_TOKEN;
 
 const bot = new TelegramBot(TOKEN, { 
   polling: true 

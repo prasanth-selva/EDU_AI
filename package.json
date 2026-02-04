@@ -8,6 +8,7 @@
     "dev": "node bot.js"
   },
   "dependencies": {
+    "dotenv": "^16.6.1",
     "express": "^4.22.1",
     "node-telegram-bot-api": "^0.63.0"
   },
