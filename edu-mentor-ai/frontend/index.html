@@ -17,7 +17,7 @@
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>📚</text></svg>">
 
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2">
 </head>
 
 <body>
@@ -210,7 +210,19 @@
     </footer>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=2"></script>
+  <script>
+    // Clear old service worker cache on load
+    if ('serviceWorker' in navigator) {
+      caches.keys().then(keys => {
+        keys.forEach(key => {
+          if (key.includes('v1') || key.includes('child')) {
+            caches.delete(key);
+          }
+        });
+      });
+    }
+  </script>
 </body>
 
 </html>

@@ -3,15 +3,15 @@
  * Offline-first caching strategy
  */
 
-const CACHE_NAME = 'edu-mentor-v1';
-const RUNTIME_CACHE = 'edu-mentor-runtime-v1';
+const CACHE_NAME = 'edu-mentor-v2-new';
+const RUNTIME_CACHE = 'edu-mentor-runtime-v2';
 
-// Files to cache immediately
+// Files to cache immediately - NEW UI ONLY
 const PRECACHE_URLS = [
   '/',
-  '/index-child.html',
-  '/app-child.js',
-  '/styles-child.css',
+  '/index.html',
+  '/app.js',
+  '/styles.css',
   '/manifest.json'
 ];
 

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Clearing Cache...</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+        }
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Clearing Old Cache...</h1>
+        <div class="spinner"></div>
+        <p>Removing old UI files...</p>
+        <p id="status">Please wait...</p>
+    </div>
+    <script>
+        async function clearAllCaches() {
+            const status = document.getElementById('status');
+            
+            try {
+                // Clear all caches
+                if ('serviceWorker' in navigator) {
+                    status.textContent = 'Unregistering service workers...';
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let registration of registrations) {
+                        await registration.unregister();
+                    }
+                }
+                
+                // Delete all caches
+                status.textContent = 'Deleting cache storage...';
+                const cacheNames = await caches.keys();
+                await Promise.all(cacheNames.map(name => caches.delete(name)));
+                
+                // Clear localStorage and sessionStorage
+                status.textContent = 'Clearing storage...';
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                status.textContent = '✅ Cache cleared! Redirecting...';
+                
+                // Redirect to main page with cache-busting parameter
+                setTimeout(() => {
+                    window.location.href = '/index.html?nocache=' + Date.now();
+                }, 1000);
+                
+            } catch (error) {
+                status.textContent = '❌ Error: ' + error.message;
+                console.error(error);
+                setTimeout(() => {
+                    window.location.href = '/index.html';
+                }, 2000);
+            }
+        }
+        
+        clearAllCaches();
+    </script>
+</body>
+</html>
