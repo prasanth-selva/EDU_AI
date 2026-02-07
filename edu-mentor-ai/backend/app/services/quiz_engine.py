@@ -58,29 +58,6 @@ def _fallback_questions(lesson: dict[str, Any], difficulty: str, lang: str, coun
 
 
 def generate_questions(lesson: dict[str, Any], difficulty: str, lang: str, count: int) -> list[dict[str, Any]]:
-    system_prompt = """
-You are EDU MENTOR AI. Create child-friendly quiz questions for Tamil Nadu State Board students.
-Use very simple language. Return JSON list with fields: q_type, question, options, answer, explanation.
-Question types: mcq, true_false, short.
-""".strip()
-
-    user_prompt = (
-        f"Lesson title: {lesson.get('title')}\n"
-        f"Grade: {lesson.get('grade')}\n"
-        f"Subject: {lesson.get('subject')}\n"
-        f"Language: {lang}\n"
-        f"Difficulty: {difficulty}\n"
-        f"Summary: {lesson.get('summary')}\n"
-        f"Content: {lesson.get('content')}\n"
-        f"Generate {count} questions."
-    )
-
-    response, _ = ollama_generate(system_prompt, user_prompt, grade=lesson.get("grade"))
-    try:
-        parsed = json.loads(response)
-        if isinstance(parsed, list):
-            return parsed[:count]
-    except Exception:
-        pass
-
+    # Use curated quiz bank for reliable, correct answers
+    # Ollama models have difficulty generating consistent correct answer indices
     return _fallback_questions(lesson, difficulty, lang, count)

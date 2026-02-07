@@ -5,10 +5,10 @@ import requests
 
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://127.0.0.1:11434")
 OLLAMA_TIMEOUT = float(os.getenv("OLLAMA_TIMEOUT", "180"))
-OLLAMA_TEMPERATURE = float(os.getenv("OLLAMA_TEMPERATURE", "0.2"))
+OLLAMA_TEMPERATURE = float(os.getenv("OLLAMA_TEMPERATURE", "0.3"))
 OLLAMA_TOP_P = float(os.getenv("OLLAMA_TOP_P", "0.9"))
 OLLAMA_TOP_K = int(os.getenv("OLLAMA_TOP_K", "40"))
-OLLAMA_NUM_PREDICT = int(os.getenv("OLLAMA_NUM_PREDICT", "256"))
+OLLAMA_NUM_PREDICT = int(os.getenv("OLLAMA_NUM_PREDICT", "200"))
 
 MODEL_PACK_A = os.getenv("MODEL_PACK_A", "phi3:mini")
 MODEL_PACK_B = os.getenv("MODEL_PACK_B", "phi3:mini")
