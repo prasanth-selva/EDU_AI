@@ -159,3 +159,4 @@ More details: [edu-mentor-ai/docs/ANDROID.md](edu-mentor-ai/docs/ANDROID.md)
 - 11 = Std 10
 - 12 = Std 11
 - 13 = Std 12
+# MEDICORE
