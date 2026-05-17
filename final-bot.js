@@ -1,7 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api');
 
 // ⚠️ REPLACE WITH YOUR NEW TOKEN
-const TOKEN = '8502164066:AAFw1NtmHYWPTPc9PSq9E0gDoQ-hXGa6El8';
+const TOKEN = 'telegram-token';
 
 console.log('🔐 Token Check:');
 console.log('Length:', TOKEN.length);
