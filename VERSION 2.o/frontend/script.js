@@ -1,6 +1,6 @@
 /* ============================================================
    EDU MENTOR AI — Complete SPA v2.0
-   All pages fully wired to backend APIs, zero placeholders
+   Production Ready: Real DB, Dynamic Data, Real Auth
    ============================================================ */
 'use strict';
 
@@ -16,6 +16,7 @@ const state = {
     quizTimerInterval: null,
     quizSecondsLeft: 0,
     progressData: [],
+    subjectsList: [],
 };
 
 // ── API Helpers ───────────────────────────────────────────────
@@ -86,7 +87,7 @@ function closeModal() {
 }
 
 // ── Router ────────────────────────────────────────────────────
-function navigate(page, opts = {}) {
+async function navigate(page, opts = {}) {
     if (state.quizTimerInterval && page !== 'quiz') {
         clearInterval(state.quizTimerInterval);
         state.quizTimerInterval = null;
@@ -98,6 +99,7 @@ function navigate(page, opts = {}) {
     const pages = {
         welcome:          renderWelcome,
         login:            renderLogin,
+        register:         renderRegister,
         teacher_login:    renderTeacherLogin,
         dashboard:        renderDashboard,
         ai_tutor:         renderAITutor,
@@ -106,6 +108,24 @@ function navigate(page, opts = {}) {
         progress:         renderProgress,
         teacher_dashboard: renderTeacherDashboard,
     };
+
+    if (['dashboard', 'subjects', 'quiz', 'progress', 'ai_tutor'].includes(page) && !state.currentUser) {
+        page = 'login';
+    }
+
+    if (page === 'teacher_dashboard' && !state.isTeacher) {
+        page = 'teacher_login';
+    }
+
+    // Pre-fetch global data if needed
+    if (page === 'subjects' || page === 'quiz') {
+        try {
+            const data = await apiGet('/api/subjects');
+            state.subjectsList = data.subjects || [];
+        } catch {
+            state.subjectsList = ["Mathematics", "Science", "English"]; // fallback for complete offline failure
+        }
+    }
 
     (pages[page] || renderNotFound)(opts);
 
@@ -162,7 +182,9 @@ function buildSidebar(activePage, isTeacher = false) {
             </div>
         </div>
         <nav class="sidebar-nav">${navItems}</nav>
-        <div class="sidebar-footer">${footerBtn}</div>
+        <div class="sidebar-footer">${footerBtn}
+        ${!isTeacher ? `<button class="btn btn-ghost btn-full" style="margin-top:8px;color:var(--error);" onclick="logout()"><span class="material-symbols-outlined">logout</span>Logout</button>` : ''}
+        </div>
     </nav>`;
 }
 
@@ -271,6 +293,82 @@ function renderWelcome() {
     </div>`;
 }
 
+// ── Student Register ──────────────────────────────────────────
+function renderRegister() {
+    document.getElementById('app').innerHTML = `
+    <div class="fullpage">
+        <div class="auth-card animate-in">
+            <div style="text-align:center;margin-bottom:28px;">
+                <span class="material-symbols-outlined auth-icon text-primary">person_add</span>
+                <h1 class="text-headline-md" style="margin-bottom:6px;">Create Account</h1>
+                <p class="text-body-md text-on-surface-variant">Join Edu Mentor AI</p>
+            </div>
+            <form id="register-form" style="display:flex;flex-direction:column;gap:16px;">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <div class="input-wrap">
+                        <span class="material-symbols-outlined input-icon">badge</span>
+                        <input type="text" id="reg-user" class="input-field" placeholder="Unique username" required autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <div class="input-wrap">
+                        <span class="material-symbols-outlined input-icon">person</span>
+                        <input type="text" id="reg-name" class="input-field" placeholder="Your full name" required autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <div class="input-wrap">
+                        <span class="material-symbols-outlined input-icon">lock</span>
+                        <input type="password" id="reg-pass" class="input-field" placeholder="Create password" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Your Class</label>
+                    <div class="input-wrap">
+                        <span class="material-symbols-outlined input-icon">auto_stories</span>
+                        <select id="reg-grade" class="input-field" required>
+                            <option value="" disabled selected>Select your class</option>
+                            ${[1,2,3,4,5,6,7,8,9,10,11,12].map(n => `<option value="${n}">Class ${n}</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" style="margin-top:8px;" id="reg-btn">
+                    Register <span class="material-symbols-outlined">arrow_forward</span>
+                </button>
+                <p style="text-align:center;font-size:14px;">Already have an account? <a href="#" onclick="navigate('login')">Login</a></p>
+                <button type="button" class="btn btn-ghost btn-full" onclick="navigate('welcome')">← Back to Home</button>
+            </form>
+        </div>
+    </div>`;
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn   = document.getElementById('reg-btn');
+        const user  = document.getElementById('reg-user').value.trim();
+        const name  = document.getElementById('reg-name').value.trim();
+        const pass  = document.getElementById('reg-pass').value;
+        const grade = document.getElementById('reg-grade').value;
+        
+        btn.disabled = true;
+        btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;"></div> Registering...';
+        
+        try {
+            const data = await apiPost('/api/student/register', { username: user, name: name, password: pass, grade: grade });
+            state.currentUser = { id: data.student_id, name: data.name, grade: data.grade };
+            state.isTeacher   = false;
+            showToast(`Welcome, ${data.name}! 🎉`, 'success');
+            navigate('dashboard');
+        } catch (err) {
+            btn.disabled = false;
+            btn.innerHTML = 'Register <span class="material-symbols-outlined">arrow_forward</span>';
+            showToast(err.message, 'error');
+        }
+    });
+}
+
 // ── Student Login ─────────────────────────────────────────────
 function renderLogin() {
     document.getElementById('app').innerHTML = `
@@ -283,26 +381,24 @@ function renderLogin() {
             </div>
             <form id="login-form" style="display:flex;flex-direction:column;gap:16px;">
                 <div class="form-group">
-                    <label class="form-label">Your Name</label>
+                    <label class="form-label">Username</label>
                     <div class="input-wrap">
-                        <span class="material-symbols-outlined input-icon">person</span>
-                        <input type="text" id="student-name" class="input-field" placeholder="Enter your name" required autocomplete="off">
+                        <span class="material-symbols-outlined input-icon">badge</span>
+                        <input type="text" id="login-user" class="input-field" placeholder="Enter username" required autocomplete="off">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Your Class</label>
+                    <label class="form-label">Password</label>
                     <div class="input-wrap">
-                        <span class="material-symbols-outlined input-icon">auto_stories</span>
-                        <select id="student-grade" class="input-field" required>
-                            <option value="" disabled selected>Select your class</option>
-                            ${[1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}">Class ${n}</option>`).join('')}
-                        </select>
+                        <span class="material-symbols-outlined input-icon">lock</span>
+                        <input type="password" id="login-pass" class="input-field" placeholder="Enter password" required>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary btn-full" style="margin-top:8px;" id="login-btn">
-                    Start Learning <span class="material-symbols-outlined">arrow_forward</span>
+                    Login <span class="material-symbols-outlined">arrow_forward</span>
                 </button>
-                <button type="button" class="btn btn-ghost btn-full" onclick="navigate('welcome')">← Back</button>
+                <p style="text-align:center;font-size:14px;">New student? <a href="#" onclick="navigate('register')">Create an account</a></p>
+                <button type="button" class="btn btn-ghost btn-full" onclick="navigate('welcome')">← Back to Home</button>
             </form>
         </div>
     </div>`;
@@ -310,22 +406,22 @@ function renderLogin() {
     document.getElementById('login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn   = document.getElementById('login-btn');
-        const name  = document.getElementById('student-name').value.trim();
-        const grade = document.getElementById('student-grade').value;
-        if (!name || !grade) return;
+        const user  = document.getElementById('login-user').value.trim();
+        const pass  = document.getElementById('login-pass').value;
+        
         btn.disabled = true;
-        btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;"></div> Registering...';
+        btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;"></div> Logging in...';
+        
         try {
-            const data = await apiPost('/api/student/register', { name, grade });
-            state.currentUser = { id: data.student_id, name: data.name, grade };
+            const data = await apiPost('/api/student/login', { username: user, password: pass });
+            state.currentUser = { id: data.student_id, name: data.name, grade: data.grade };
             state.isTeacher   = false;
-            showToast(`Welcome, ${data.name}! 🎉`, 'success');
+            showToast(`Welcome back, ${data.name}! 🎉`, 'success');
             navigate('dashboard');
-        } catch {
-            state.currentUser = { id: Date.now(), name, grade };
-            state.isTeacher   = false;
-            showToast(`Welcome, ${name}! (Offline mode)`, 'info');
-            navigate('dashboard');
+        } catch (err) {
+            btn.disabled = false;
+            btn.innerHTML = 'Login <span class="material-symbols-outlined">arrow_forward</span>';
+            showToast(err.message, 'error');
         }
     });
 }
@@ -358,11 +454,8 @@ function renderTeacherLogin() {
                 <button type="submit" class="btn btn-secondary btn-full" style="margin-top:8px;" id="teacher-btn">
                     Login <span class="material-symbols-outlined">arrow_forward</span>
                 </button>
-                <button type="button" class="btn btn-ghost btn-full" onclick="navigate('welcome')">← Back</button>
+                <button type="button" class="btn btn-ghost btn-full" onclick="navigate('welcome')">← Back to Home</button>
             </form>
-            <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--on-surface-variant);">
-                Default: <strong>admin</strong> / <strong>admin123</strong>
-            </p>
         </div>
     </div>`;
 
@@ -374,22 +467,15 @@ function renderTeacherLogin() {
         btn.disabled = true;
         btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;"></div> Logging in...';
         try {
-            await apiPost('/api/teacher/login', { username: user, password: pass });
+            const data = await apiPost('/api/teacher/login', { username: user, password: pass });
             state.isTeacher   = true;
-            state.currentUser = { id: 0, name: 'Teacher' };
+            state.currentUser = { id: data.teacher_id, name: 'Teacher' };
             showToast('Welcome back, Teacher! 👋', 'success');
             navigate('teacher_dashboard');
         } catch (err) {
-            if (user === 'admin' && pass === 'admin123') {
-                state.isTeacher   = true;
-                state.currentUser = { id: 0, name: 'Teacher' };
-                showToast('Welcome back, Teacher! (Offline mode)', 'info');
-                navigate('teacher_dashboard');
-            } else {
-                btn.disabled = false;
-                btn.innerHTML = 'Login <span class="material-symbols-outlined">arrow_forward</span>';
-                showToast(err.message || 'Invalid credentials', 'error');
-            }
+            btn.disabled = false;
+            btn.innerHTML = 'Login <span class="material-symbols-outlined">arrow_forward</span>';
+            showToast(err.message, 'error');
         }
     });
 }
@@ -428,7 +514,7 @@ function renderDashboard() {
                             <div class="stat-card-icon" style="background:rgba(0,110,47,0.1);color:var(--secondary);"><span class="material-symbols-outlined">local_fire_department</span></div>
                         </div>
                         <div class="stat-card-value text-secondary" id="dash-streak">—</div>
-                        <div class="stat-card-label">Day Streak 🔥</div>
+                        <div class="stat-card-label">Best Streak 🔥</div>
                     </div>
                     <div class="stat-card card-tertiary">
                         <div class="stat-card-header">
@@ -539,15 +625,16 @@ async function loadDashboardProgress() {
 
         grid.innerHTML = state.progressData.map(s => {
             const meta = SUBJECT_META[s.subject] || { icon: 'school', color: 'var(--primary)', bg: 'rgba(0,74,198,0.1)' };
+            const completion = Math.round(s.completion);
             return `
             <div class="card" style="border-top-color:${meta.color};">
                 <div class="flex items-center gap-2 mb-4">
                     <div class="card-icon" style="background:${meta.bg};color:${meta.color};width:44px;height:44px;margin:0;"><span class="material-symbols-outlined">${meta.icon}</span></div>
                     <strong>${s.subject}</strong>
                 </div>
-                <div class="progress-bar" style="margin-bottom:8px;"><div class="progress-fill" style="width:${s.completion}%;background:${meta.color};"></div></div>
+                <div class="progress-bar" style="margin-bottom:8px;"><div class="progress-fill" style="width:${completion}%;background:${meta.color};"></div></div>
                 <div class="flex justify-between" style="font-size:13px;color:var(--on-surface-variant);">
-                    <span>${s.completion}% score</span><span>${s.streak} quiz${s.streak !== 1 ? 'zes' : ''}</span>
+                    <span>${completion}% score</span><span>${s.streak} quizzes</span>
                 </div>
             </div>`;
         }).join('');
@@ -581,7 +668,7 @@ function renderAITutor() {
                         </button>
                     </form>
                     <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
-                        ${['Explain photosynthesis','What is Newton\'s first law?','How do plants make food?','What is the water cycle?'].map(q =>
+                        ${['Explain photosynthesis','What is Newton\'s first law?','How do plants make food?'].map(q =>
                             `<button class="btn btn-outlined btn-sm" onclick="quickAsk('${q.replace(/'/g, "\\'")}')">${q}</button>`
                         ).join('')}
                     </div>
@@ -590,6 +677,33 @@ function renderAITutor() {
         </div>
     </div>
     ${buildBottomNav('ai_tutor')}`;
+    
+    // Load history
+    loadChatHistory();
+}
+
+async function loadChatHistory() {
+    const msgs = document.getElementById('chat-msgs');
+    if (!msgs || !state.currentUser?.id) return;
+    try {
+        const data = await apiGet(`/api/chat_history/${state.currentUser.id}`);
+        if (data.history && data.history.length > 0) {
+            data.history.forEach(h => {
+                const userBubble = document.createElement('div');
+                userBubble.className = 'chat-bubble user';
+                userBubble.textContent = h.question;
+                msgs.appendChild(userBubble);
+                
+                const aiBubble = document.createElement('div');
+                aiBubble.className = 'chat-bubble ai';
+                aiBubble.innerHTML = (h.answer || '').replace(/\n/g, '<br>');
+                msgs.appendChild(aiBubble);
+            });
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+    } catch {
+        // silent fail on history load
+    }
 }
 
 function quickAsk(q) {
@@ -623,7 +737,6 @@ async function sendChat(e) {
     try {
         const data = await apiPost('/api/ask', { question: msg, student_id: state.currentUser?.id || 1 });
         typingBubble.className = 'chat-bubble ai animate-in';
-        // Format newlines into <br>
         typingBubble.innerHTML = (data.answer || 'No answer returned.').replace(/\n/g, '<br>');
     } catch (err) {
         typingBubble.className = 'chat-bubble ai animate-in';
@@ -636,17 +749,17 @@ async function sendChat(e) {
 }
 
 // ── My Subjects ───────────────────────────────────────────────
-const SUBJECTS = [
-    { name:'Mathematics',     icon:'🔢', emoji:'calculate',  color:'var(--primary)',   bg:'rgba(0,74,198,0.1)',   lessons:'12/18', topic:'Fractions & Algebra' },
-    { name:'Science',         icon:'🔬', emoji:'science',     color:'var(--secondary)', bg:'rgba(0,110,47,0.1)',   lessons:'5/12',  topic:'The Solar System' },
-    { name:'English',         icon:'📖', emoji:'history_edu', color:'var(--tertiary)',  bg:'rgba(120,75,0,0.1)',   lessons:'14/18', topic:'Grammar Fundamentals' },
-    { name:'Tamil',           icon:'🌿', emoji:'language',    color:'#6d28d9',          bg:'rgba(109,40,217,0.1)', lessons:'8/15',  topic:'Poetry & Prose' },
-    { name:'Social Science',  icon:'🌍', emoji:'public',      color:'#0891b2',          bg:'rgba(8,145,178,0.1)', lessons:'4/14',  topic:'Ancient Civilisations' },
-    { name:'Computer Science',icon:'💻', emoji:'computer',    color:'#0f766e',          bg:'rgba(15,118,110,0.1)',lessons:'1/10',  topic:'Introduction to Programming' },
-];
-
 function renderSubjects() {
     if (!state.currentUser) { navigate('login'); return; }
+
+    const SUBJECT_META = {
+        'Mathematics':    { icon: 'calculate',   color: 'var(--primary)',   bg: 'rgba(0,74,198,0.1)' },
+        'Science':        { icon: 'science',      color: 'var(--secondary)', bg: 'rgba(0,110,47,0.1)' },
+        'English':        { icon: 'history_edu',  color: 'var(--tertiary)',  bg: 'rgba(120,75,0,0.1)' },
+        'Tamil':          { icon: 'language',     color: '#6d28d9',          bg: 'rgba(109,40,217,0.1)' },
+        'Social Science': { icon: 'public',       color: '#0891b2',          bg: 'rgba(8,145,178,0.1)' },
+        'Computer Science': { icon: 'computer',   color: '#0f766e',          bg: 'rgba(15,118,110,0.1)' },
+    };
 
     document.getElementById('app').innerHTML = `
     ${buildSidebar('subjects')}
@@ -659,38 +772,39 @@ function renderSubjects() {
                     <p>Pick up where you left off or start something new.</p>
                 </div>
                 <div class="grid grid-3 animate-in animate-in-delay-1" id="subjects-grid">
-                    ${SUBJECTS.map((s, i) => {
-                        // Check if we have real progress for this subject
-                        const prog = state.progressData.find(p => p.subject === s.name);
+                    ${state.subjectsList.map((subjectName, i) => {
+                        const sMeta = SUBJECT_META[subjectName] || { icon: 'school', color: 'var(--primary)', bg: 'rgba(0,74,198,0.1)' };
+                        const prog = state.progressData.find(p => p.subject === subjectName);
                         const pct  = prog ? Math.round(prog.completion) : 0;
+                        const streaks = prog ? prog.streak : 0;
                         return `
-                        <div class="subject-card" style="border-top-color:${s.color};animation-delay:${i*0.05}s;">
-                            <div class="subject-card-banner" style="background:${s.bg};">
-                                <span class="material-symbols-outlined icon-filled" style="font-size:72px;color:${s.color};">${s.emoji}</span>
+                        <div class="subject-card" style="border-top-color:${sMeta.color};animation-delay:${i*0.05}s;">
+                            <div class="subject-card-banner" style="background:${sMeta.bg};">
+                                <span class="material-symbols-outlined icon-filled" style="font-size:72px;color:${sMeta.color};">${sMeta.icon}</span>
                             </div>
                             <div class="subject-card-body">
                                 <div>
-                                    <h3 class="text-headline-sm">${s.name}</h3>
-                                    <p class="text-body-md text-on-surface-variant">${s.topic}</p>
+                                    <h3 class="text-headline-sm">${subjectName}</h3>
                                 </div>
                                 <div>
                                     <div class="flex justify-between mb-2" style="font-size:13px;">
                                         <span style="font-weight:600;">${pct > 0 ? pct + '% score' : 'Not started'}</span>
-                                        <span style="color:var(--on-surface-variant);">${s.lessons} lessons</span>
+                                        <span style="color:var(--on-surface-variant);">${streaks} quizzes</span>
                                     </div>
-                                    <div class="progress-bar thick"><div class="progress-fill" style="width:${pct}%;background:${s.color};"></div></div>
+                                    <div class="progress-bar thick"><div class="progress-fill" style="width:${pct}%;background:${sMeta.color};"></div></div>
                                 </div>
                                 <div style="display:flex;gap:8px;">
-                                    <button class="btn btn-full" style="background:${s.color};color:white;flex:1;" onclick="startSubjectQuiz('${s.name}')">
+                                    <button class="btn btn-full" style="background:${sMeta.color};color:white;flex:1;" onclick="startSubjectQuiz('${subjectName}')">
                                         ${pct > 0 ? 'Practice More' : 'Start Quiz'} <span class="material-symbols-outlined">arrow_forward</span>
                                     </button>
-                                    <button class="btn btn-outlined" onclick="askAboutSubject('${s.name}')" title="Ask AI about ${s.name}">
+                                    <button class="btn btn-outlined" onclick="askAboutSubject('${subjectName}')" title="Ask AI about ${subjectName}">
                                         <span class="material-symbols-outlined">psychology</span>
                                     </button>
                                 </div>
                             </div>
                         </div>`;
                     }).join('')}
+                    ${state.subjectsList.length === 0 ? '<div class="empty-state" style="grid-column:1/-1;">No subjects available yet. Ask your teacher to upload textbooks!</div>' : ''}
                 </div>
             </div>
         </div>
@@ -706,7 +820,6 @@ function startSubjectQuiz(subject) {
 function askAboutSubject(subject) {
     state.currentPage = 'ai_tutor';
     navigate('ai_tutor');
-    // Pre-fill a question after navigation
     setTimeout(() => {
         const input = document.getElementById('chat-input');
         if (input) {
@@ -720,8 +833,7 @@ function askAboutSubject(subject) {
 function renderQuiz() {
     if (!state.currentUser) { navigate('login'); return; }
 
-    const subjects   = SUBJECTS.map(s => s.name);
-    const defSubject = state.quizSubject || 'Science';
+    const defSubject = state.quizSubject || state.subjectsList[0] || 'General';
 
     document.getElementById('app').innerHTML = `
     <div style="min-height:100vh;display:flex;flex-direction:column;background:var(--background);">
@@ -738,14 +850,14 @@ function renderQuiz() {
                     <div class="quiz-question-card" style="text-align:center;margin-bottom:32px;">
                         <span class="material-symbols-outlined icon-filled" style="font-size:56px;color:var(--primary);margin-bottom:16px;">assignment</span>
                         <h2 class="text-headline-lg" style="margin-bottom:8px;">Ready to Quiz?</h2>
-                        <p class="text-body-lg text-on-surface-variant">Choose a subject and we'll generate 5 questions using AI!</p>
+                        <p class="text-body-lg text-on-surface-variant">Choose a subject and we'll generate 5 questions dynamically using RAG AI!</p>
                     </div>
                     <div class="form-group" style="margin-bottom:24px;">
                         <label class="form-label">Select Subject</label>
                         <div class="input-wrap">
                             <span class="material-symbols-outlined input-icon">category</span>
                             <select id="quiz-subject-sel" class="input-field">
-                                ${subjects.map(s => `<option value="${s}" ${s===defSubject?'selected':''}>${s}</option>`).join('')}
+                                ${state.subjectsList.map(s => `<option value="${s}" ${s===defSubject?'selected':''}>${s}</option>`).join('')}
                             </select>
                         </div>
                     </div>
@@ -917,6 +1029,8 @@ function showQuizResults() {
             student_id: state.currentUser.id,
             subject: state.quizSubject,
             score: pct,
+            total_questions: total,
+            correct_answers: score
         }).then(() => {
             // Refresh cached progress
             apiGet(`/api/progress/${state.currentUser.id}`)
@@ -1048,7 +1162,7 @@ async function loadProgressPage() {
                 <div style="flex:1;">
                     <div class="flex justify-between mb-2">
                         <strong>${s.subject}</strong>
-                        <span class="text-label-sm text-on-surface-variant">${s.streak} quiz${s.streak !== 1 ? 'zes' : ''}</span>
+                        <span class="text-label-sm text-on-surface-variant">${s.streak} quizzes completed</span>
                     </div>
                     <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${meta.color};"></div></div>
                 </div>
@@ -1097,14 +1211,14 @@ function renderTeacherDashboard() {
                         <div class="stat-card-label">Uploaded PDFs</div>
                     </div>
                     <div class="stat-card card-tertiary">
-                        <div class="stat-card-header"><span class="text-label-sm text-on-surface-variant">STATUS</span><div class="stat-card-icon" style="background:rgba(120,75,0,0.1);color:var(--tertiary);"><span class="material-symbols-outlined">wifi</span></div></div>
-                        <div class="stat-card-value text-tertiary">Online</div>
-                        <div class="stat-card-label">Server Status</div>
+                        <div class="stat-card-header"><span class="text-label-sm text-on-surface-variant">QUIZZES</span><div class="stat-card-icon" style="background:rgba(120,75,0,0.1);color:var(--tertiary);"><span class="material-symbols-outlined">assignment_turned_in</span></div></div>
+                        <div class="stat-card-value text-tertiary" id="stat-quizzes">—</div>
+                        <div class="stat-card-label">Total Quizzes Taken</div>
                     </div>
                     <div class="stat-card" style="border-top-color:var(--secondary);">
-                        <div class="stat-card-header"><span class="text-label-sm text-on-surface-variant">AI</span><div class="stat-card-icon" style="background:rgba(0,110,47,0.1);color:var(--secondary);"><span class="material-symbols-outlined">psychology</span></div></div>
-                        <div class="stat-card-value text-secondary">Ready</div>
-                        <div class="stat-card-label">AI Tutor Status</div>
+                        <div class="stat-card-header"><span class="text-label-sm text-on-surface-variant">QUESTIONS</span><div class="stat-card-icon" style="background:rgba(0,110,47,0.1);color:var(--secondary);"><span class="material-symbols-outlined">psychology</span></div></div>
+                        <div class="stat-card-value text-secondary" id="stat-questions">—</div>
+                        <div class="stat-card-label">AI Tutor Questions</div>
                     </div>
                 </div>
 
@@ -1153,8 +1267,12 @@ async function loadTeacherStats() {
         const data = await apiGet('/api/teacher/stats');
         const elS = document.getElementById('stat-students');
         const elD = document.getElementById('stat-docs');
+        const elQ = document.getElementById('stat-quizzes');
+        const elQst = document.getElementById('stat-questions');
         if (elS) elS.textContent = data.students ?? '—';
         if (elD) elD.textContent = data.documents ?? '—';
+        if (elQ) elQ.textContent = data.total_quizzes ?? '—';
+        if (elQst) elQst.textContent = data.questions_asked ?? '—';
     } catch { /* ignore */ }
 }
 
@@ -1222,15 +1340,10 @@ function queueUploads(files) {
                 <label class="form-label">Assign to Subject</label>
                 <div class="input-wrap">
                     <span class="material-symbols-outlined input-icon">category</span>
-                    <select id="modal-subject" class="input-field">
-                        <option value="Mathematics">Mathematics</option>
-                        <option value="Science">Science</option>
-                        <option value="English">English</option>
-                        <option value="Tamil">Tamil</option>
-                        <option value="Social Science">Social Science</option>
-                        <option value="Computer Science">Computer Science</option>
-                        <option value="General">General</option>
-                    </select>
+                    <input type="text" id="modal-subject" class="input-field" placeholder="E.g. Mathematics, History, etc." list="subjects-list">
+                    <datalist id="subjects-list">
+                        ${state.subjectsList.map(s => `<option value="${s}">`).join('')}
+                    </datalist>
                 </div>
             </div>`,
             `<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
