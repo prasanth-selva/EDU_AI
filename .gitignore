@@ -7,3 +7,14 @@ coverage/# Large files
 *.zip
 *.pdf
 data/pdfs/
+
+# Local SQLite databases and their journal/WAL sidecar files
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-shm
+*.db-wal
+data/*.db
+edu-mentor-ai/backend/data/*.db
+VERSION 2.o/db/

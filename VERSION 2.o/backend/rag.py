@@ -6,7 +6,7 @@ import os, logging
 
 BASE_DIR      = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FAISS_DIR     = os.path.join(BASE_DIR, "db", "faiss_index")
-EMBED_MODEL   = os.getenv("EMBED_MODEL", "nomic-embed-text")
+EMBED_MODEL   = os.getenv("EMBED_MODEL", "all-minilm")
 CHAT_MODEL    = os.getenv("CHAT_MODEL",  "qwen2.5:1.5b")
 OLLAMA_HOST   = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 
@@ -14,23 +14,23 @@ logger = logging.getLogger("edumentor.rag")
 
 # ---- Lazy imports so the app starts even if langchain not installed yet ----
 def _get_embeddings():
-    from langchain_community.embeddings import OllamaEmbeddings
+    from langchain_ollama import OllamaEmbeddings
     return OllamaEmbeddings(model=EMBED_MODEL, base_url=OLLAMA_HOST)
 
 def _get_llm():
-    from langchain_community.llms import Ollama
-    return Ollama(model=CHAT_MODEL, base_url=OLLAMA_HOST)
+    from langchain_ollama import OllamaLLM
+    return OllamaLLM(model=CHAT_MODEL, base_url=OLLAMA_HOST)
 
 def _get_vectorstore(embeddings):
     from langchain_community.vectorstores import FAISS
-    if os.path.exists(FAISS_DIR):
+    if os.path.exists(os.path.join(FAISS_DIR, "index.faiss")):
         return FAISS.load_local(FAISS_DIR, embeddings, allow_dangerous_deserialization=True)
     return None
 
 def process_pdf_and_index(filepath: str, subject: str = "General") -> int:
     """Load PDF, chunk, embed, and save/update the FAISS index. Returns chunk count."""
     from langchain_community.document_loaders import PyPDFLoader
-    from langchain.text_splitter import RecursiveCharacterTextSplitter
+    from langchain_text_splitters import RecursiveCharacterTextSplitter
     from langchain_community.vectorstores import FAISS
 
     os.makedirs(FAISS_DIR, exist_ok=True)
