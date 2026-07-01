@@ -942,10 +942,13 @@ function showQuestion() {
         </div>
         <div class="quiz-options">
             ${q.options.map((opt, i) => `
-            <button class="quiz-option" id="opt-${i}" onclick="selectAnswer(${i}, ${q.correct_index})">
+            <button class="quiz-option" id="opt-${i}" onclick="selectAnswer(${i}, ${q.correct_index}, \`${(q.explanation || 'No explanation provided.').replace(/`/g, "'")}\`)">
                 <div class="quiz-option-letter">${letters[i]}</div>
                 <span>${opt}</span>
             </button>`).join('')}
+        </div>
+        <div id="quiz-explanation" style="display:none; margin-top:20px; padding:16px; border-radius:8px; background:var(--surface-container-high); font-size:14px; color:var(--on-surface-variant); border-left:4px solid var(--primary);">
+            <strong>Explanation:</strong> <span id="quiz-explanation-text"></span>
         </div>
         <div class="flex justify-between items-center" style="margin-top:16px;">
             <span class="text-body-md text-on-surface-variant">${total - state.quizCurrent - 1} questions left</span>
@@ -958,7 +961,7 @@ function showQuestion() {
     document.getElementById('quiz-score-badge').textContent = `Score: ${state.quizScore}/${state.quizData.length}`;
 }
 
-function selectAnswer(selected, correct) {
+function selectAnswer(selected, correct, explanation) {
     document.querySelectorAll('.quiz-option').forEach(el => el.classList.add('disabled'));
     const selectedEl = document.getElementById(`opt-${selected}`);
     const correctEl  = document.getElementById(`opt-${correct}`);
@@ -971,6 +974,13 @@ function selectAnswer(selected, correct) {
         selectedEl?.classList.add('wrong');
         correctEl?.classList.add('correct');
         showToast('Not quite — see the correct answer!', 'warning');
+    }
+
+    const expDiv = document.getElementById('quiz-explanation');
+    const expText = document.getElementById('quiz-explanation-text');
+    if (expDiv && expText) {
+        expText.textContent = explanation;
+        expDiv.style.display = 'block';
     }
 
     document.getElementById('quiz-score-badge').textContent = `Score: ${state.quizScore}/${state.quizData.length}`;
