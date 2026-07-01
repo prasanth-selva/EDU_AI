@@ -13,6 +13,8 @@ logger = logging.getLogger("edumentor.quiz")
 # Strict prompt — triple-backtick JSON block
 QUIZ_PROMPT = """You are a school quiz generator. Generate exactly {count} multiple-choice questions about the topic: "{subject}".
 
+{context_section}
+
 IMPORTANT: Output ONLY a JSON array. No explanation. No markdown text before or after. Start with [ and end with ].
 
 Format:
@@ -25,6 +27,7 @@ Rules:
 - correct_index is 0-based (0 = first option)
 - Each question has EXACTLY 4 options
 - Generate {count} questions total
+- If context is provided above, try to base questions on it. Otherwise, use general knowledge.
 
 Output the JSON array now:"""
 
@@ -58,7 +61,6 @@ def _extract_json_array(text: str) -> list:
             pass
 
     # Strategy 4: reconstruct from line-by-line question+options pattern
-    # (handles models that output readable text instead of JSON)
     questions = []
     q_blocks = re.split(r'\n(?=\d+[\.\)])', text)
     for block in q_blocks:
@@ -112,9 +114,14 @@ def _validate(questions: list, count: int) -> list:
 def generate_quiz(subject: str, count: int = 5) -> list:
     """Generate quiz questions using Ollama. Raises HTTPException on total failure."""
     from langchain_ollama import OllamaLLM
+    from backend.rag import get_context_for_subject
+    
+    context = get_context_for_subject(subject)
+    context_section = f"Use this textbook context to create questions:\n{context}\n" if context else ""
+    
     llm = OllamaLLM(model=CHAT_MODEL, base_url=OLLAMA_HOST, temperature=0.3)
 
-    prompt = QUIZ_PROMPT.format(subject=subject, count=count)
+    prompt = QUIZ_PROMPT.format(subject=subject, count=count, context_section=context_section)
 
     last_err = None
     for attempt in range(3):

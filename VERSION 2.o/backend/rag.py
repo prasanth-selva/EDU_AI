@@ -111,3 +111,25 @@ def get_answer(question: str) -> str:
             f"Please ensure Ollama is running: `ollama serve`\n\n"
             f"Error details: {str(e)}"
         )
+
+def get_context_for_subject(subject: str, k: int = 4) -> str:
+    """Retrieve random context chunks for a specific subject to use in quiz generation."""
+    try:
+        embeddings = _get_embeddings()
+        vs = _get_vectorstore(embeddings)
+        if vs is None:
+            return ""
+        
+        # We can just search for the subject name to get relevant chunks
+        docs = vs.similarity_search(subject, k=k)
+        
+        # Filter by metadata if it exists
+        filtered_docs = [d for d in docs if d.metadata.get("subject", "") == subject]
+        if not filtered_docs:
+            filtered_docs = docs # Fallback if metadata is missing or wrong
+            
+        context = "\n\n---\n\n".join(d.page_content for d in filtered_docs)
+        return context
+    except Exception as e:
+        logger.exception("RAG pipeline error getting context")
+        return ""
