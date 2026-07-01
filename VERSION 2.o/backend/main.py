@@ -1,6 +1,6 @@
 """
-Edu Mentor AI — FastAPI Backend
-Serves the REST API + static frontend SPA
+Edu Mentor AI — FastAPI Backend  (Production-ready)
+All endpoints wired, CORS enabled, SPA served.
 """
 import os, shutil, logging
 from fastapi import FastAPI, UploadFile, File, Form, Depends, HTTPException, Request
@@ -13,7 +13,10 @@ from typing import Optional
 
 from backend.database import init_db, get_db, Student, SubjectProgress, Document
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(name)s %(levelname)s — %(message)s"
+)
 logger = logging.getLogger("edumentor")
 
 BASE_DIR     = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,15 +26,17 @@ os.makedirs(PDFS_DIR, exist_ok=True)
 
 app = FastAPI(title="Edu Mentor AI", version="2.0", docs_url="/api/docs")
 
-app.add_middleware(CORSMiddleware,
-    allow_origins=["*"], allow_credentials=True,
-    allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 init_db()
 
-# ============================================================
-# PYDANTIC SCHEMAS
-# ============================================================
+# ── Pydantic Schemas ──────────────────────────────────────────
 class RegisterReq(BaseModel):
     name: str
     grade: str
@@ -46,25 +51,22 @@ class AskReq(BaseModel):
 
 class QuizReq(BaseModel):
     subject: str
+    count: Optional[int] = 5
 
 class QuizSubmitReq(BaseModel):
     student_id: int
     subject: str
-    score: float
+    score: float   # percentage 0-100
 
 class DeleteDocReq(BaseModel):
     doc_id: int
 
-# ============================================================
-# HEALTH
-# ============================================================
+# ── Health ────────────────────────────────────────────────────
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "message": "Edu Mentor AI is running 🎓"}
+    return {"status": "ok", "version": "2.0", "message": "Edu Mentor AI is running 🎓"}
 
-# ============================================================
-# STUDENT ROUTES
-# ============================================================
+# ── Students ──────────────────────────────────────────────────
 @app.post("/api/student/register")
 def register_student(req: RegisterReq, db: Session = Depends(get_db)):
     student = Student(name=req.name.strip(), grade=req.grade)
@@ -79,9 +81,7 @@ def list_students(db: Session = Depends(get_db)):
     students = db.query(Student).order_by(Student.created_at.desc()).all()
     return {"students": [{"id": s.id, "name": s.name, "grade": s.grade} for s in students]}
 
-# ============================================================
-# TEACHER ROUTES
-# ============================================================
+# ── Teacher ───────────────────────────────────────────────────
 TEACHER_USERNAME = os.getenv("TEACHER_USER", "admin")
 TEACHER_PASSWORD = os.getenv("TEACHER_PASS", "admin123")
 
@@ -97,15 +97,18 @@ def teacher_stats(db: Session = Depends(get_db)):
     documents = db.query(Document).count()
     return {"students": students, "documents": documents}
 
-# ============================================================
-# DOCUMENT / UPLOAD ROUTES
-# ============================================================
+# ── Documents ─────────────────────────────────────────────────
 @app.get("/api/documents")
 def list_documents(db: Session = Depends(get_db)):
     docs = db.query(Document).order_by(Document.upload_time.desc()).all()
     return {"documents": [
-        {"id": d.id, "filename": d.filename, "subject": d.subject,
-         "status": d.status, "upload_time": d.upload_time.isoformat()}
+        {
+            "id": d.id,
+            "filename": d.filename,
+            "subject": d.subject,
+            "status": d.status,
+            "upload_time": d.upload_time.isoformat()
+        }
         for d in docs
     ]}
 
@@ -113,104 +116,127 @@ def list_documents(db: Session = Depends(get_db)):
 async def upload_pdf(
     file: UploadFile = File(...),
     subject: str = Form("General"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     if not file.filename.lower().endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Only PDF files are accepted")
+        raise HTTPException(status_code=400, detail="Only PDF files are accepted.")
 
-    filepath = os.path.join(PDFS_DIR, file.filename)
+    # Sanitize filename
+    safe_name = os.path.basename(file.filename)
+    filepath  = os.path.join(PDFS_DIR, safe_name)
     with open(filepath, "wb") as buf:
         shutil.copyfileobj(file.file, buf)
 
-    doc = Document(filename=file.filename, filepath=filepath, subject=subject, status="indexing")
-    db.add(doc); db.commit(); db.refresh(doc)
+    doc = Document(filename=safe_name, filepath=filepath, subject=subject, status="indexing")
+    db.add(doc)
+    db.commit()
+    db.refresh(doc)
 
     try:
         from backend.rag import process_pdf_and_index
-        chunks = process_pdf_and_index(filepath, subject)
+        chunks     = process_pdf_and_index(filepath, subject)
         doc.status = "indexed"
         db.commit()
-        logger.info(f"Indexed {file.filename}: {chunks} chunks")
-        return {"message": f"Successfully indexed {chunks} chunks from '{file.filename}'", "doc_id": doc.id}
+        logger.info(f"Indexed {safe_name}: {chunks} chunks")
+        return {"message": f"Successfully indexed {chunks} chunks from '{safe_name}'", "doc_id": doc.id}
     except Exception as e:
         doc.status = "error"
         db.commit()
-        logger.error(f"Index error: {e}")
+        logger.error(f"Indexing error for {safe_name}: {e}")
         raise HTTPException(status_code=500, detail=f"Indexing failed: {str(e)}")
 
 @app.post("/api/documents/delete")
 def delete_document(req: DeleteDocReq, db: Session = Depends(get_db)):
     doc = db.query(Document).filter(Document.id == req.doc_id).first()
     if not doc:
-        raise HTTPException(status_code=404, detail="Document not found")
-    # Optionally remove file
+        raise HTTPException(status_code=404, detail="Document not found.")
     try:
-        if os.path.exists(doc.filepath):
+        if doc.filepath and os.path.exists(doc.filepath):
             os.remove(doc.filepath)
-    except Exception:
+    except OSError:
         pass
     db.delete(doc)
     db.commit()
-    return {"message": "Document deleted"}
+    return {"message": "Document deleted successfully."}
 
-# ============================================================
-# AI TUTOR ROUTE
-# ============================================================
+# ── AI Tutor ──────────────────────────────────────────────────
 @app.post("/api/ask")
 def ask_tutor(req: AskReq):
+    if not req.question or not req.question.strip():
+        raise HTTPException(status_code=400, detail="Question cannot be empty.")
     from backend.rag import get_answer
-    answer = get_answer(req.question)
+    answer = get_answer(req.question.strip())
     return {"answer": answer}
 
-# ============================================================
-# QUIZ ROUTES
-# ============================================================
+# ── Quiz ──────────────────────────────────────────────────────
 @app.post("/api/quiz/generate")
 def generate_quiz_route(req: QuizReq):
+    if not req.subject or not req.subject.strip():
+        raise HTTPException(status_code=400, detail="Subject cannot be empty.")
     from backend.quiz import generate_quiz
-    questions = generate_quiz(req.subject)
-    return {"quiz": questions}
+    questions = generate_quiz(req.subject.strip(), req.count or 5)
+    return {"quiz": questions, "subject": req.subject, "count": len(questions)}
 
 @app.post("/api/quiz/submit")
 def submit_quiz(req: QuizSubmitReq, db: Session = Depends(get_db)):
     prog = db.query(SubjectProgress).filter_by(
-        student_id=req.student_id, subject=req.subject).first()
+        student_id=req.student_id, subject=req.subject
+    ).first()
+
     if not prog:
-        prog = SubjectProgress(student_id=req.student_id,
-                               subject=req.subject,
-                               completion_percentage=req.score,
-                               streak_days=1)
+        prog = SubjectProgress(
+            student_id=req.student_id,
+            subject=req.subject,
+            completion_percentage=req.score,
+            streak_days=1,
+        )
         db.add(prog)
     else:
-        prog.completion_percentage = round((prog.completion_percentage + req.score) / 2, 1)
+        # Rolling average
+        prog.completion_percentage = round(
+            (prog.completion_percentage * 0.6 + req.score * 0.4), 1
+        )
         prog.streak_days += 1
-    db.commit()
-    return {"message": "Progress saved", "score": prog.completion_percentage, "streak": prog.streak_days}
 
+    db.commit()
+    return {
+        "message": "Progress saved!",
+        "score": prog.completion_percentage,
+        "streak": prog.streak_days,
+    }
+
+# ── Progress ──────────────────────────────────────────────────
 @app.get("/api/progress/{student_id}")
 def get_progress(student_id: int, db: Session = Depends(get_db)):
     rows = db.query(SubjectProgress).filter_by(student_id=student_id).all()
-    return {"progress": [
-        {"subject": r.subject, "completion": r.completion_percentage, "streak": r.streak_days}
-        for r in rows
-    ]}
+    total_quizzes = sum(r.streak_days for r in rows)
+    avg_score     = round(
+        sum(r.completion_percentage for r in rows) / len(rows), 1
+    ) if rows else 0
 
-# ============================================================
-# STATIC FILES — SPA (must be LAST)
-# ============================================================
+    return {
+        "progress": [
+            {
+                "subject": r.subject,
+                "completion": r.completion_percentage,
+                "streak": r.streak_days,
+            }
+            for r in rows
+        ],
+        "total_quizzes": total_quizzes,
+        "avg_score": avg_score,
+    }
+
+# ── Serve SPA (LAST — catch-all) ──────────────────────────────
 @app.get("/")
 def serve_index():
     return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
 
-# Catch-all for SPA routes (non-API)
 @app.get("/{full_path:path}")
 async def serve_spa(full_path: str, request: Request):
-    # Don't intercept API calls
     if full_path.startswith("api/"):
-        raise HTTPException(status_code=404)
-    # Try to serve a real file first
+        raise HTTPException(status_code=404, detail="API route not found.")
     target = os.path.join(FRONTEND_DIR, full_path)
     if os.path.isfile(target):
         return FileResponse(target)
-    # Fallback to index.html (SPA routing)
     return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
