@@ -1,77 +1,90 @@
-import os
-from langchain_community.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import OllamaEmbeddings
-from langchain_community.vectorstores import FAISS
-from langchain_community.llms import Ollama
-from langchain.prompts import PromptTemplate
-from langchain.chains import RetrievalQA
+"""
+RAG Pipeline — PDF → Chunks → FAISS → Ollama Answer
+Falls back gracefully if Ollama is not available.
+"""
+import os, logging
 
-DB_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "db")
-FAISS_INDEX_PATH = os.path.join(DB_DIR, "faiss_index")
+BASE_DIR      = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FAISS_DIR     = os.path.join(BASE_DIR, "db", "faiss_index")
+EMBED_MODEL   = os.getenv("EMBED_MODEL", "nomic-embed-text")
+CHAT_MODEL    = os.getenv("CHAT_MODEL",  "qwen2.5:1.5b")
+OLLAMA_HOST   = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 
-# Using nomic-embed-text for fast, local embedding
-embeddings = OllamaEmbeddings(model="nomic-embed-text")
+logger = logging.getLogger("edumentor.rag")
 
-# Using qwen2.5:1.5b for chat by default (fast and small)
-llm = Ollama(model="qwen2.5:1.5b")
+# ---- Lazy imports so the app starts even if langchain not installed yet ----
+def _get_embeddings():
+    from langchain_community.embeddings import OllamaEmbeddings
+    return OllamaEmbeddings(model=EMBED_MODEL, base_url=OLLAMA_HOST)
 
-def process_pdf_and_index(filepath: str, subject: str = "General"):
-    """
-    Loads a PDF, splits it into chunks, and adds it to the FAISS vector store.
-    """
-    loader = PyPDFLoader(filepath)
-    pages = loader.load()
-    
-    # Add metadata
-    for page in pages:
-        page.metadata["subject"] = subject
-        
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
-    docs = text_splitter.split_documents(pages)
-    
-    if os.path.exists(FAISS_INDEX_PATH):
-        vectorstore = FAISS.load_local(FAISS_INDEX_PATH, embeddings, allow_dangerous_deserialization=True)
-        vectorstore.add_documents(docs)
+def _get_llm():
+    from langchain_community.llms import Ollama
+    return Ollama(model=CHAT_MODEL, base_url=OLLAMA_HOST)
+
+def _get_vectorstore(embeddings):
+    from langchain_community.vectorstores import FAISS
+    if os.path.exists(FAISS_DIR):
+        return FAISS.load_local(FAISS_DIR, embeddings, allow_dangerous_deserialization=True)
+    return None
+
+def process_pdf_and_index(filepath: str, subject: str = "General") -> int:
+    """Load PDF, chunk, embed, and save/update the FAISS index. Returns chunk count."""
+    from langchain_community.document_loaders import PyPDFLoader
+    from langchain.text_splitter import RecursiveCharacterTextSplitter
+    from langchain_community.vectorstores import FAISS
+
+    os.makedirs(FAISS_DIR, exist_ok=True)
+    loader   = PyPDFLoader(filepath)
+    pages    = loader.load()
+    for p in pages:
+        p.metadata["subject"] = subject
+
+    splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=80)
+    docs     = splitter.split_documents(pages)
+    if not docs:
+        return 0
+
+    embeddings = _get_embeddings()
+    if os.path.exists(os.path.join(FAISS_DIR, "index.faiss")):
+        vs = FAISS.load_local(FAISS_DIR, embeddings, allow_dangerous_deserialization=True)
+        vs.add_documents(docs)
     else:
-        vectorstore = FAISS.from_documents(docs, embeddings)
-        
-    vectorstore.save_local(FAISS_INDEX_PATH)
+        vs = FAISS.from_documents(docs, embeddings)
+    vs.save_local(FAISS_DIR)
+    logger.info(f"Indexed {len(docs)} chunks from {filepath}")
     return len(docs)
 
-def get_answer(question: str) -> str:
-    """
-    Retrieves relevant chunks and generates an answer using Ollama.
-    """
-    if not os.path.exists(FAISS_INDEX_PATH):
-        return "I haven't read any books yet! Please ask your teacher to upload some PDFs."
-        
-    vectorstore = FAISS.load_local(FAISS_INDEX_PATH, embeddings, allow_dangerous_deserialization=True)
-    retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
-    
-    template = """You are an offline AI Tutor for students. 
-Answer the following question clearly and simply based on the provided context from their textbooks. 
-If the answer is not in the context, just say that you don't know based on the current books.
+PROMPT_TEMPLATE = """You are a helpful, encouraging AI tutor for school students.
+Answer the student's question using the context from their textbooks below.
+Be clear, simple, and friendly. If the context doesn't contain the answer, say so honestly.
 
-Context:
+Context from textbooks:
 {context}
 
-Question: {question}
+Student's Question: {question}
 
-Helpful Answer:"""
-    
-    QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"], template=template)
-    
-    qa_chain = RetrievalQA.from_chain_type(
-        llm=llm,
-        chain_type="stuff",
-        retriever=retriever,
-        chain_type_kwargs={"prompt": QA_CHAIN_PROMPT}
-    )
-    
+Answer:"""
+
+def get_answer(question: str) -> str:
+    """Retrieve relevant context and generate an answer via Ollama."""
     try:
-        response = qa_chain.invoke({"query": question})
-        return response.get("result", "Sorry, I couldn't process that.")
+        embeddings = _get_embeddings()
+        vs = _get_vectorstore(embeddings)
+        if vs is None:
+            return ("📚 No books uploaded yet! Ask your teacher to upload textbook PDFs "
+                    "via the Teacher Dashboard first.")
+
+        docs = vs.similarity_search(question, k=4)
+        context = "\n\n".join(d.page_content for d in docs)
+
+        from langchain.prompts import PromptTemplate
+        from langchain.chains import LLMChain
+        llm    = _get_llm()
+        prompt = PromptTemplate(input_variables=["context","question"], template=PROMPT_TEMPLATE)
+        chain  = LLMChain(llm=llm, prompt=prompt)
+        result = chain.run(context=context, question=question)
+        return result.strip()
     except Exception as e:
-        print(f"Error querying Ollama: {e}")
-        return "Oops, something went wrong. Make sure Ollama is running in the background!"
+        logger.exception("RAG error")
+        return (f"⚠️ The AI Tutor is unavailable right now. "
+                f"Please make sure Ollama is running with: `ollama serve`\n\nError: {e}")

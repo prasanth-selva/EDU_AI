@@ -1,103 +1,216 @@
-import os
-import shutil
-from fastapi import FastAPI, UploadFile, File, Form, Depends, HTTPException
+"""
+Edu Mentor AI — FastAPI Backend
+Serves the REST API + static frontend SPA
+"""
+import os, shutil, logging
+from fastapi import FastAPI, UploadFile, File, Form, Depends, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from typing import List
+from typing import Optional
 
 from backend.database import init_db, get_db, Student, SubjectProgress, Document
-from backend.rag import process_pdf_and_index, get_answer
-from backend.quiz import generate_quiz
 
-app = FastAPI(title="Edu Mentor AI")
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("edumentor")
 
-# Create DB tables
+BASE_DIR     = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
+PDFS_DIR     = os.path.join(BASE_DIR, "pdfs")
+os.makedirs(PDFS_DIR, exist_ok=True)
+
+app = FastAPI(title="Edu Mentor AI", version="2.0", docs_url="/api/docs")
+
+app.add_middleware(CORSMiddleware,
+    allow_origins=["*"], allow_credentials=True,
+    allow_methods=["*"], allow_headers=["*"])
+
 init_db()
 
-# --- Pydantic Models ---
-class AskRequest(BaseModel):
-    question: str
-    student_id: int = 1
-
-class RegisterRequest(BaseModel):
+# ============================================================
+# PYDANTIC SCHEMAS
+# ============================================================
+class RegisterReq(BaseModel):
     name: str
     grade: str
 
-class QuizRequest(BaseModel):
+class TeacherLoginReq(BaseModel):
+    username: str
+    password: str
+
+class AskReq(BaseModel):
+    question: str
+    student_id: Optional[int] = 1
+
+class QuizReq(BaseModel):
     subject: str
-    
-class QuizSubmitRequest(BaseModel):
+
+class QuizSubmitReq(BaseModel):
     student_id: int
     subject: str
-    score: float # percentage
+    score: float
 
-# --- API Routes ---
+class DeleteDocReq(BaseModel):
+    doc_id: int
+
+# ============================================================
+# HEALTH
+# ============================================================
 @app.get("/api/health")
-def health_check():
-    return {"status": "ok", "message": "Edu Mentor AI server is running."}
+def health():
+    return {"status": "ok", "message": "Edu Mentor AI is running 🎓"}
 
+# ============================================================
+# STUDENT ROUTES
+# ============================================================
 @app.post("/api/student/register")
-def register_student(req: RegisterRequest, db: Session = Depends(get_db)):
-    student = Student(name=req.name, grade=req.grade)
+def register_student(req: RegisterReq, db: Session = Depends(get_db)):
+    student = Student(name=req.name.strip(), grade=req.grade)
     db.add(student)
     db.commit()
     db.refresh(student)
+    logger.info(f"New student: {student.name} (class {student.grade})")
     return {"student_id": student.id, "name": student.name}
 
+@app.get("/api/students")
+def list_students(db: Session = Depends(get_db)):
+    students = db.query(Student).order_by(Student.created_at.desc()).all()
+    return {"students": [{"id": s.id, "name": s.name, "grade": s.grade} for s in students]}
+
+# ============================================================
+# TEACHER ROUTES
+# ============================================================
+TEACHER_USERNAME = os.getenv("TEACHER_USER", "admin")
+TEACHER_PASSWORD = os.getenv("TEACHER_PASS", "admin123")
+
+@app.post("/api/teacher/login")
+def teacher_login(req: TeacherLoginReq):
+    if req.username == TEACHER_USERNAME and req.password == TEACHER_PASSWORD:
+        return {"success": True, "message": "Welcome back, Teacher!"}
+    raise HTTPException(status_code=401, detail="Invalid username or password")
+
+@app.get("/api/teacher/stats")
+def teacher_stats(db: Session = Depends(get_db)):
+    students  = db.query(Student).count()
+    documents = db.query(Document).count()
+    return {"students": students, "documents": documents}
+
+# ============================================================
+# DOCUMENT / UPLOAD ROUTES
+# ============================================================
+@app.get("/api/documents")
+def list_documents(db: Session = Depends(get_db)):
+    docs = db.query(Document).order_by(Document.upload_time.desc()).all()
+    return {"documents": [
+        {"id": d.id, "filename": d.filename, "subject": d.subject,
+         "status": d.status, "upload_time": d.upload_time.isoformat()}
+        for d in docs
+    ]}
+
 @app.post("/api/upload")
-async def upload_pdf(file: UploadFile = File(...), subject: str = Form(...), db: Session = Depends(get_db)):
-    pdfs_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "pdfs")
-    filepath = os.path.join(pdfs_dir, file.filename)
-    
-    with open(filepath, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-        
+async def upload_pdf(
+    file: UploadFile = File(...),
+    subject: str = Form("General"),
+    db: Session = Depends(get_db)
+):
+    if not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are accepted")
+
+    filepath = os.path.join(PDFS_DIR, file.filename)
+    with open(filepath, "wb") as buf:
+        shutil.copyfileobj(file.file, buf)
+
     doc = Document(filename=file.filename, filepath=filepath, subject=subject, status="indexing")
-    db.add(doc)
-    db.commit()
-    
+    db.add(doc); db.commit(); db.refresh(doc)
+
     try:
+        from backend.rag import process_pdf_and_index
         chunks = process_pdf_and_index(filepath, subject)
         doc.status = "indexed"
         db.commit()
-        return {"message": f"Successfully indexed {chunks} chunks from {file.filename}."}
+        logger.info(f"Indexed {file.filename}: {chunks} chunks")
+        return {"message": f"Successfully indexed {chunks} chunks from '{file.filename}'", "doc_id": doc.id}
     except Exception as e:
         doc.status = "error"
         db.commit()
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Index error: {e}")
+        raise HTTPException(status_code=500, detail=f"Indexing failed: {str(e)}")
 
+@app.post("/api/documents/delete")
+def delete_document(req: DeleteDocReq, db: Session = Depends(get_db)):
+    doc = db.query(Document).filter(Document.id == req.doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    # Optionally remove file
+    try:
+        if os.path.exists(doc.filepath):
+            os.remove(doc.filepath)
+    except Exception:
+        pass
+    db.delete(doc)
+    db.commit()
+    return {"message": "Document deleted"}
+
+# ============================================================
+# AI TUTOR ROUTE
+# ============================================================
 @app.post("/api/ask")
-def ask_tutor(req: AskRequest):
+def ask_tutor(req: AskReq):
+    from backend.rag import get_answer
     answer = get_answer(req.question)
     return {"answer": answer}
 
+# ============================================================
+# QUIZ ROUTES
+# ============================================================
 @app.post("/api/quiz/generate")
-def get_quiz(req: QuizRequest):
-    quiz = generate_quiz(req.subject)
-    return {"quiz": quiz}
+def generate_quiz_route(req: QuizReq):
+    from backend.quiz import generate_quiz
+    questions = generate_quiz(req.subject)
+    return {"quiz": questions}
 
 @app.post("/api/quiz/submit")
-def submit_quiz(req: QuizSubmitRequest, db: Session = Depends(get_db)):
-    prog = db.query(SubjectProgress).filter_by(student_id=req.student_id, subject=req.subject).first()
+def submit_quiz(req: QuizSubmitReq, db: Session = Depends(get_db)):
+    prog = db.query(SubjectProgress).filter_by(
+        student_id=req.student_id, subject=req.subject).first()
     if not prog:
-        prog = SubjectProgress(student_id=req.student_id, subject=req.subject, completion_percentage=req.score)
+        prog = SubjectProgress(student_id=req.student_id,
+                               subject=req.subject,
+                               completion_percentage=req.score,
+                               streak_days=1)
         db.add(prog)
     else:
-        # Just a simple moving average for demo purposes
-        prog.completion_percentage = (prog.completion_percentage + req.score) / 2
+        prog.completion_percentage = round((prog.completion_percentage + req.score) / 2, 1)
         prog.streak_days += 1
-    
     db.commit()
-    return {"message": "Progress updated", "new_score": prog.completion_percentage}
+    return {"message": "Progress saved", "score": prog.completion_percentage, "streak": prog.streak_days}
 
-# --- Static Files / SPA Routing ---
-frontend_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
+@app.get("/api/progress/{student_id}")
+def get_progress(student_id: int, db: Session = Depends(get_db)):
+    rows = db.query(SubjectProgress).filter_by(student_id=student_id).all()
+    return {"progress": [
+        {"subject": r.subject, "completion": r.completion_percentage, "streak": r.streak_days}
+        for r in rows
+    ]}
 
+# ============================================================
+# STATIC FILES — SPA (must be LAST)
+# ============================================================
 @app.get("/")
 def serve_index():
-    return FileResponse(os.path.join(frontend_path, "index.html"))
+    return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
 
-# Mount frontend directory for assets (CSS, JS, manifest, etc.)
-app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
+# Catch-all for SPA routes (non-API)
+@app.get("/{full_path:path}")
+async def serve_spa(full_path: str, request: Request):
+    # Don't intercept API calls
+    if full_path.startswith("api/"):
+        raise HTTPException(status_code=404)
+    # Try to serve a real file first
+    target = os.path.join(FRONTEND_DIR, full_path)
+    if os.path.isfile(target):
+        return FileResponse(target)
+    # Fallback to index.html (SPA routing)
+    return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
