@@ -1,0 +1,195 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Student Login - EduPulse AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#00174b",
+                        "surface-container-highest": "#e0e3e5",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary-container": "#996100",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-tint": "#0053db",
+                        "on-secondary-fixed": "#002109",
+                        "background": "#f7f9fb",
+                        "on-tertiary-container": "#ffeedd",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#eceef0",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#ffddb8",
+                        "tertiary": "#784b00",
+                        "surface": "#f7f9fb",
+                        "on-primary-container": "#eeefff",
+                        "on-primary": "#ffffff",
+                        "secondary": "#006e2f",
+                        "on-secondary-fixed-variant": "#005321",
+                        "surface-dim": "#d8dadc",
+                        "on-surface-variant": "#434655",
+                        "surface-container-low": "#f2f4f6",
+                        "inverse-surface": "#2d3133",
+                        "primary-container": "#2563eb",
+                        "primary": "#004ac6",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "secondary-fixed": "#6bff8f",
+                        "on-surface": "#191c1e",
+                        "on-secondary-container": "#007432",
+                        "surface-bright": "#f7f9fb",
+                        "primary-fixed": "#dbe1ff",
+                        "outline-variant": "#c3c6d7",
+                        "on-tertiary-fixed": "#2a1700",
+                        "on-background": "#191c1e",
+                        "surface-variant": "#e0e3e5",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "secondary-fixed-dim": "#4ae176",
+                        "secondary-container": "#6bff8f",
+                        "surface-container-high": "#e6e8ea",
+                        "outline": "#737686",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#003ea8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "base": "8px",
+                        "xl": "80px",
+                        "md": "24px",
+                        "gutter": "24px",
+                        "sm": "12px",
+                        "margin-desktop": "64px",
+                        "lg": "48px",
+                        "margin-mobile": "20px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "display-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "display-md": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "display-lg": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-background min-h-screen flex items-center justify-center p-4">
+<!-- Main Container -->
+<main class="w-full max-w-4xl mx-auto flex flex-col items-center gap-xl relative z-10">
+<!-- Welcome Card -->
+<div class="bg-surface-container-lowest rounded-xl p-lg w-full max-w-md flex flex-col items-center text-center gap-md relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,74,198,0.08)] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border-t-[4px] border-primary">
+<div class="mb-sm flex flex-col items-center">
+<span class="material-symbols-outlined text-[64px] text-primary mb-2">school</span>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">EduMentor AI</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Ready to learn? Let's go!</p>
+</div>
+<form class="w-full flex flex-col gap-sm">
+<!-- Name Input -->
+<div class="relative w-full">
+<label class="sr-only" for="studentName">Your Name</label>
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">person</span>
+</div>
+<input class="w-full pl-10 pr-4 py-4 bg-surface-container-low border-2 border-outline-variant rounded-lg font-body-lg text-body-lg text-on-surface focus:outline-none focus:border-primary focus:ring-0 transition-colors" id="studentName" name="studentName" placeholder="What's your name?" type="text">
+</div>
+<!-- Class Dropdown -->
+<div class="relative w-full">
+<label class="sr-only" for="classSelect">Select Class</label>
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">auto_stories</span>
+</div>
+<select class="w-full pl-10 pr-10 py-4 bg-surface-container-low border-2 border-outline-variant rounded-lg font-body-lg text-body-lg text-on-surface focus:outline-none focus:border-primary focus:ring-0 transition-colors appearance-none cursor-pointer" id="classSelect" name="classSelect">
+<option disabled="" selected="" value="">Select your class</option>
+<option value="lkg">LKG</option>
+<option value="ukg">UKG</option>
+<option value="1">1st Grade</option>
+<option value="2">2nd Grade</option>
+<option value="3">3rd Grade</option>
+<option value="4">4th Grade</option>
+<option value="5">5th Grade</option>
+<option value="6">6th Grade</option>
+</select>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">expand_more</span>
+</div>
+</div>
+<!-- Login Button -->
+<button class="mt-4 w-full h-[56px] bg-primary text-on-primary font-label-lg text-label-lg rounded-lg border-b-[4px] border-[#003ea8] active:border-b-0 active:translate-y-[4px] transition-all flex items-center justify-center gap-2" type="button">
+<span class="">Start Learning</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</form>
+</div>
+<!-- Recent Students Section -->
+<div class="w-full max-w-2xl flex flex-col items-center gap-md">
+<h2 class="font-headline-md text-headline-md text-on-surface-variant">Recent Students</h2>
+<div class="flex flex-wrap justify-center gap-sm">
+<!-- Student 1 -->
+<button class="bg-surface-container-lowest p-sm pr-md rounded-full flex items-center gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,74,198,0.06)] hover:-translate-y-1 transition-all border border-surface-container-highest">
+<img class="w-[48px] h-[48px] rounded-full object-cover" data-alt="A small, cheerful 3D avatar of a young student with short dark hair, wearing a bright blue t-shirt, set against a soft yellow circular background. The style is modern, playful, and high-quality 3D rendering suitable for an educational app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa7x2FduLlDp4eVapAM80xnWvcipJxJCDG3w5XmB1GatggoCC84xzMFptAFEG7YQF3f0_mUh_SO4Oi0n1imVXCF4uQp1_7TfFzCz-pnIP-4oAtvMsv9PNEY1grxhhfNI9yAvQs7SWIOgLQo62LvQ-Q5g6SOlCfOsJmI4Q5WUW--4hWOGwvL8VLDWIElihvbCroF777XeH02AB_I93smQC43kUxDjP91qT3nykkE9vXhD090jdhBMGVfqSyosjjXS9eQ00IzFw_Abo">
+<div class="text-left flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">Leo M.</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">3rd Grade</span>
+</div>
+</button>
+<!-- Student 2 -->
+<button class="bg-surface-container-lowest p-sm pr-md rounded-full flex items-center gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,74,198,0.06)] hover:-translate-y-1 transition-all border border-surface-container-highest">
+<img class="w-[48px] h-[48px] rounded-full object-cover" data-alt="A small, cute 3D avatar of a young student with curly pigtails, wearing a vibrant green dress, set against a soft pink circular background. The style is bright, inviting, and modern 3D illustration suitable for a kids learning platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBadCnGoA8kn4ViFXalRhqno82wjWNcERDEBH1AwUfcYnuzG8V3cEW6aUV7IkiRzgzKLbk4GlB1ASp3aYEFq06iAXW-9D33PnLApmYokqlRo_zNFB44v-e7WC_mHzZfjOK_gdTrhN003GTXjVIBoNjmo6JyE5UpI55ZE7V7a_ZM9z7ynZH03URfuHbXmoyXr8Oc2qahNTKPKV-kBvo2YKg57d7sty4GOyGBgZtL8PUcMWgwAYy3bC9jrSbkgGcMRfaosSKkQJvQvmE">
+<div class="text-left flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">Maya S.</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">1st Grade</span>
+</div>
+</button>
+<!-- Add New Student -->
+<button class="bg-surface-container p-sm px-md rounded-full flex items-center gap-2 border-2 border-dashed border-outline-variant hover:border-primary hover:bg-primary-container/10 transition-colors text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined">add</span>
+<span class="font-label-lg text-label-lg">New</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Decorative Elements (Background) -->
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+<!-- Abstract Shapes -->
+<div class="absolute top-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-primary/5 blur-[80px]"></div>
+<div class="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-secondary/5 blur-[100px]"></div>
+<div class="absolute top-[20%] right-[10%] w-[200px] h-[200px] rounded-full bg-tertiary/5 blur-[60px]"></div>
+</div>
+
+
+</body></html>

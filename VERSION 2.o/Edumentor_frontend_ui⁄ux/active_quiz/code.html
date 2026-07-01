@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduKinetic - Quiz</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#6bff8f",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#e6e8ea",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "outline-variant": "#c3c6d7",
+                        "tertiary": "#784b00",
+                        "surface-variant": "#e0e3e5",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary-container": "#996100",
+                        "on-background": "#191c1e",
+                        "on-secondary-fixed": "#002109",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary": "#006e2f",
+                        "surface-tint": "#0053db",
+                        "on-primary-fixed": "#00174b",
+                        "surface": "#f7f9fb",
+                        "surface-bright": "#f7f9fb",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "primary-container": "#2563eb",
+                        "on-surface": "#191c1e",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "tertiary-fixed": "#ffddb8",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-tertiary-fixed": "#2a1700",
+                        "secondary-fixed-dim": "#4ae176",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "surface-dim": "#d8dadc",
+                        "inverse-surface": "#2d3133",
+                        "outline": "#737686",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-secondary-container": "#007432",
+                        "on-tertiary-container": "#ffeedd",
+                        "background": "#f7f9fb",
+                        "on-primary-container": "#eeefff",
+                        "primary-fixed": "#dbe1ff",
+                        "on-secondary-fixed-variant": "#005321",
+                        "secondary-fixed": "#6bff8f",
+                        "error-container": "#ffdad6",
+                        "primary": "#004ac6",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "xl": "80px",
+                        "margin-mobile": "20px",
+                        "lg": "48px",
+                        "margin-desktop": "64px",
+                        "base": "8px",
+                        "md": "24px",
+                        "xs": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "display-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "display-lg": ["56px", {"lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "display-md": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .option-card {
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+        
+        .option-card:active {
+            transform: scale(0.98);
+        }
+        
+        .option-card.selected-correct {
+            background-color: theme('colors.secondary-container');
+            border-color: theme('colors.secondary');
+            color: theme('colors.on-secondary-container');
+            transform: scale(1.02);
+            box-shadow: 0 10px 40px -10px theme('colors.secondary');
+        }
+        
+        .option-card.selected-wrong {
+            background-color: theme('colors.error-container');
+            border-color: theme('colors.error');
+            color: theme('colors.on-error-container');
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation (Suppressed for focused task) -->
+<header class="w-full px-margin-mobile md:px-margin-desktop py-sm flex justify-between items-center bg-surface sticky top-0 z-40">
+<button class="flex items-center text-on-surface-variant hover:bg-surface-container-high rounded-full p-2 transition-colors group">
+<span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform">close</span>
+<span class="ml-2 font-label-lg text-label-lg">Exit Quiz</span>
+</button>
+<div class="flex items-center space-x-2 bg-tertiary-container/10 px-4 py-2 rounded-full">
+<span class="material-symbols-outlined text-tertiary">timer</span>
+<span class="font-headline-md text-headline-md text-tertiary">02:45</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col items-center justify-center w-full max-w-3xl mx-auto px-margin-mobile md:px-0 py-lg md:py-xl">
+<!-- Progress Bar -->
+<div class="w-full mb-lg">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-lg text-label-lg text-on-surface-variant">Question 3 of 10</span>
+<span class="font-label-lg text-label-lg text-primary">Science</span>
+</div>
+<div class="h-4 bg-surface-container-high rounded-full overflow-hidden w-full relative">
+<div class="h-full bg-secondary rounded-full absolute left-0 top-0 transition-all duration-500 ease-out" style="width: 30%;"></div>
+</div>
+</div>
+<!-- Question Card -->
+<div class="bg-surface rounded-[24px] shadow-[0_10px_40px_0_rgba(0,0,0,0.04)] p-md md:p-lg w-full mb-lg border-t-4 border-primary relative overflow-hidden">
+<!-- Decorative Icon -->
+<div class="absolute -right-6 -top-6 opacity-5 pointer-events-none">
+<span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'FILL' 1;">biotech</span>
+</div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-md">
+                What is the process by which plants convert sunlight into energy?
+            </h1>
+<!-- Optional Illustration Placeholder -->
+<div class="w-full h-48 md:h-64 rounded-xl overflow-hidden mb-md border-2 border-surface-container-high">
+<img class="w-full h-full object-cover" data-alt="A vibrant, playful illustration of a green plant with a smiling face, soaking up bright yellow sun rays. The style is modern, vector-based, and educational, suitable for a digital learning app. The colors are bright green, yellow, and clear sky blue, set against a pristine white background. The overall mood is encouraging and intelligent." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMWp_RaDpJEO0iR4UJcFYvR9GuAwFMni0FwVcNbFGap19DD2QBCY_y23Gr71h3tJxXgUyOx9gT2sQDWDk2o0j5id9TvVxyBVflrEcOuz6S5sx_JxWT0R1Krt5-8pYGN_sbCHXv2TLEq1n2dpHyV35owQd7ckYAGqoatc9sf4uSsipMeUyOA-rSxhW_D8h5wbsDAYHSYo1calHY7G2k4AuAnn_TXkMfsECLbAKrDaXzskMPywRzB8NsECAFV9DVQzmxWsJIKV24hX4"/>
+</div>
+</div>
+<!-- Options Grid -->
+<div class="w-full grid grid-cols-1 gap-sm md:gap-md mb-xl">
+<!-- Option 1 -->
+<button class="option-card w-full text-left bg-surface rounded-xl p-md border-2 border-surface-container-highest shadow-sm hover:shadow-md hover:border-primary/50 hover:bg-surface-container-low focus:outline-none focus:ring-4 focus:ring-primary/20 flex items-center justify-between group">
+<div class="flex items-center">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-headline-md text-headline-md mr-sm group-hover:bg-primary/10 group-hover:text-primary transition-colors">A</div>
+<span class="font-body-lg text-body-lg text-on-surface">Respiration</span>
+</div>
+<span class="material-symbols-outlined text-outline opacity-0 group-hover:opacity-100 transition-opacity">radio_button_unchecked</span>
+</button>
+<!-- Option 2 (Correct State Demo) -->
+<button class="option-card w-full text-left bg-surface rounded-xl p-md border-2 border-surface-container-highest shadow-sm hover:shadow-md hover:border-primary/50 hover:bg-surface-container-low focus:outline-none focus:ring-4 focus:ring-primary/20 flex items-center justify-between group" onclick="this.classList.add('selected-correct')">
+<div class="flex items-center">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-headline-md text-headline-md mr-sm group-hover:bg-primary/10 group-hover:text-primary transition-colors">B</div>
+<span class="font-body-lg text-body-lg text-on-surface">Photosynthesis</span>
+</div>
+<span class="material-symbols-outlined text-outline opacity-0 group-hover:opacity-100 transition-opacity">radio_button_unchecked</span>
+</button>
+<!-- Option 3 (Wrong State Demo) -->
+<button class="option-card w-full text-left bg-surface rounded-xl p-md border-2 border-surface-container-highest shadow-sm hover:shadow-md hover:border-primary/50 hover:bg-surface-container-low focus:outline-none focus:ring-4 focus:ring-primary/20 flex items-center justify-between group" onclick="this.classList.add('selected-wrong')">
+<div class="flex items-center">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-headline-md text-headline-md mr-sm group-hover:bg-primary/10 group-hover:text-primary transition-colors">C</div>
+<span class="font-body-lg text-body-lg text-on-surface">Transpiration</span>
+</div>
+<span class="material-symbols-outlined text-outline opacity-0 group-hover:opacity-100 transition-opacity">radio_button_unchecked</span>
+</button>
+<!-- Option 4 -->
+<button class="option-card w-full text-left bg-surface rounded-xl p-md border-2 border-surface-container-highest shadow-sm hover:shadow-md hover:border-primary/50 hover:bg-surface-container-low focus:outline-none focus:ring-4 focus:ring-primary/20 flex items-center justify-between group">
+<div class="flex items-center">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-headline-md text-headline-md mr-sm group-hover:bg-primary/10 group-hover:text-primary transition-colors">D</div>
+<span class="font-body-lg text-body-lg text-on-surface">Germination</span>
+</div>
+<span class="material-symbols-outlined text-outline opacity-0 group-hover:opacity-100 transition-opacity">radio_button_unchecked</span>
+</button>
+</div>
+<!-- Action Area -->
+<div class="w-full flex justify-end">
+<button class="bg-primary text-on-primary font-label-lg text-label-lg px-8 py-4 rounded-xl flex items-center shadow-[0_4px_0_0_theme('colors.on-primary-fixed-variant')] hover:translate-y-[2px] hover:shadow-[0_2px_0_0_theme('colors.on-primary-fixed-variant')] active:translate-y-[4px] active:shadow-none transition-all min-h-[56px]">
+                Next Question
+                <span class="material-symbols-outlined ml-2">arrow_forward</span>
+</button>
+</div>
+</main>
+<script>
+        // Simple interaction demo
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Reset others
+                document.querySelectorAll('.option-card').forEach(c => {
+                    c.classList.remove('selected-correct', 'selected-wrong');
+                    c.querySelector('.material-symbols-outlined').textContent = 'radio_button_unchecked';
+                });
+                
+                // Note: The specific classes (selected-correct/wrong) are hardcoded on inline onclicks for demonstration purposes
+                // In a real app, this logic would evaluate the answer.
+                
+                if(this.classList.contains('selected-correct') || this.getAttribute('onclick') === "this.classList.add('selected-correct')") {
+                     this.querySelector('.material-symbols-outlined').textContent = 'check_circle';
+                     this.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
+                } else if(this.classList.contains('selected-wrong') || this.getAttribute('onclick') === "this.classList.add('selected-wrong')") {
+                     this.querySelector('.material-symbols-outlined').textContent = 'cancel';
+                     this.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
+                }
+            });
+        });
+    </script>
+</body></html>

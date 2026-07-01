@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduKinetic - AI Chat Interface</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#6bff8f",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#e6e8ea",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "outline-variant": "#c3c6d7",
+                        "tertiary": "#784b00",
+                        "surface-variant": "#e0e3e5",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary-container": "#996100",
+                        "on-background": "#191c1e",
+                        "on-secondary-fixed": "#002109",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary": "#006e2f",
+                        "surface-tint": "#0053db",
+                        "on-primary-fixed": "#00174b",
+                        "surface": "#f7f9fb",
+                        "surface-bright": "#f7f9fb",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "primary-container": "#2563eb",
+                        "on-surface": "#191c1e",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "tertiary-fixed": "#ffddb8",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-tertiary-fixed": "#2a1700",
+                        "secondary-fixed-dim": "#4ae176",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "surface-dim": "#d8dadc",
+                        "inverse-surface": "#2d3133",
+                        "outline": "#737686",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-secondary-container": "#007432",
+                        "on-tertiary-container": "#ffeedd",
+                        "background": "#f7f9fb",
+                        "on-primary-container": "#eeefff",
+                        "primary-fixed": "#dbe1ff",
+                        "on-secondary-fixed-variant": "#005321",
+                        "secondary-fixed": "#6bff8f",
+                        "error-container": "#ffdad6",
+                        "primary": "#004ac6",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "xl": "80px",
+                        "margin-mobile": "20px",
+                        "lg": "48px",
+                        "margin-desktop": "64px",
+                        "base": "8px",
+                        "md": "24px",
+                        "xs": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "display-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "display-lg": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "display-md": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .typing-dot {
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        
+        /* Hide scrollbar for chips */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background h-full font-body-md text-body-md overflow-hidden flex">
+<!-- TopNavBar (Mobile Only) -->
+<nav class="md:hidden sticky top-0 z-40 flex justify-between items-center w-full px-margin-mobile py-sm bg-surface shadow-sm shadow-[0_10px_40px_0_rgba(0,0,0,0.04)]">
+<div class="text-headline-md font-headline-md font-black text-primary tracking-tight">EduKinetic</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary hover:bg-surface-container-low transition-colors p-2 rounded-full cursor-pointer">notifications</span>
+<span class="material-symbols-outlined text-primary hover:bg-surface-container-low transition-colors p-2 rounded-full cursor-pointer">account_circle</span>
+</div>
+</nav>
+<!-- SideNavBar (Desktop Only) -->
+<nav class="hidden md:flex h-full w-[280px] border-r-2 border-outline-variant bg-surface-container-low fixed left-0 top-0 flex-col py-lg px-sm z-50">
+<div class="flex items-center gap-3 px-2 mb-8">
+<img class="w-12 h-12 rounded-full object-cover border-2 border-primary" data-alt="A small, friendly profile picture of a teacher with a warm smile, set against a bright white background, suitable for a modern learning portal avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2SOvSdjNxITy-UDeaAq_dHGSt0Gv7Q3KmmcFAWLET1TQE8nX2lszpR5FWfwTiTMMh_vyGjhJmDVFrUfF9W4b3Cv1OnWzyhZKxlKZPAorR_mGVPY4UxxpHGLPy5muJsIBpcbfMCLeAWrELLfrTeCJ_vJbywNhNCpFSO9kbQsrqJkrQFsKJNhuBd_wNCuUI_WjqepxCNtGdmxqwpFCl-90FMDzavwQyW8QJDxgkNz4YTvcEZKWOoJIylxhCnjtti701v8pJGWwQbNU"/>
+<div>
+<h1 class="text-headline-md font-headline-md font-black text-primary">EduKinetic</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Learning Portal</p>
+</div>
+</div>
+<button class="mb-8 mx-2 bg-primary text-on-primary font-label-lg text-label-lg py-3 rounded-full hover:scale-[1.02] transition-transform duration-200 border-b-4 border-on-primary-fixed-variant shadow-[0_10px_40px_0_rgba(0,0,0,0.04)]">
+            New Lesson
+        </button>
+<ul class="flex flex-col gap-2 font-label-lg text-label-lg flex-1">
+<li class="flex items-center gap-3 px-4 py-3 text-on-surface-variant mx-2 hover:bg-surface-container-high rounded-full cursor-pointer hover:scale-[1.02] transition-transform duration-200">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</li>
+<li class="flex items-center gap-3 px-4 py-3 text-on-surface-variant mx-2 hover:bg-surface-container-high rounded-full cursor-pointer hover:scale-[1.02] transition-transform duration-200">
+<span class="material-symbols-outlined">auto_stories</span>
+<span>Subjects</span>
+</li>
+<li class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container font-bold rounded-full mx-2 translate-x-1 duration-200">
+<span class="material-symbols-outlined">psychology</span>
+<span>AI Tutor</span>
+</li>
+<li class="flex items-center gap-3 px-4 py-3 text-on-surface-variant mx-2 hover:bg-surface-container-high rounded-full cursor-pointer hover:scale-[1.02] transition-transform duration-200">
+<span class="material-symbols-outlined">cloud_upload</span>
+<span>Uploads</span>
+</li>
+<li class="flex items-center gap-3 px-4 py-3 text-on-surface-variant mx-2 hover:bg-surface-container-high rounded-full cursor-pointer hover:scale-[1.02] transition-transform duration-200">
+<span class="material-symbols-outlined">insights</span>
+<span>Progress</span>
+</li>
+</ul>
+<div class="mt-auto">
+<div class="flex items-center gap-3 px-4 py-3 text-on-surface-variant mx-2 hover:bg-surface-container-high rounded-full cursor-pointer hover:scale-[1.02] transition-transform duration-200">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</div>
+</div>
+</nav>
+<!-- Main Content Area (Chat View) -->
+<main class="flex-1 h-full flex flex-col md:ml-[280px] bg-background pb-[80px] md:pb-0 relative">
+<!-- Chat Header -->
+<header class="flex-none bg-surface border-b-2 border-outline-variant px-margin-mobile md:px-margin-desktop py-md flex items-center justify-between sticky top-0 z-30 md:static shadow-[0_10px_40px_0_rgba(0,0,0,0.04)]">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary-container rounded-full flex items-center justify-center border-2 border-primary overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A cute, friendly 3D illustration of a robot or owl acting as an AI mentor, rendered in a modern, bright playful style with soft lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTfjNNSTc6qiRVoSXtw5XaBjvu3R_AoCV04K8RrTE-3KV0KR3s64AlHkHpht2bpfx8BJlV6QWKZ-KKqLwYBSEp3FxfKHrSmrRvGOcdZO0I1peMWpIzs0pm7-BuJn0mKirIZNI9QkIuzlbU41JypTnm-PgHIAYx3KKAcVJnDfEGl_0qFr332q-aTgxX3Uv5UvrbqlqJ0h4EPrWncwX-psul4z1BKvfvC60oIUUI_vVFG8Fi4CnVtT7wvHr8wT_N95g2rPetPdwrCFo"/>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Edu Mentor AI Assistant</h2>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 bg-secondary rounded-full"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Online</span>
+</div>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Chat Messages Area -->
+<div class="flex-1 overflow-y-auto px-margin-mobile md:px-margin-desktop py-lg flex flex-col gap-6" id="chat-container">
+<!-- System/Date Divider -->
+<div class="flex justify-center">
+<span class="bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm px-4 py-1 rounded-full">Today</span>
+</div>
+<!-- AI Message -->
+<div class="flex gap-4 max-w-[85%] md:max-w-[70%]">
+<div class="w-10 h-10 flex-shrink-0 bg-primary-container rounded-full flex items-center justify-center border-2 border-primary self-end overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A cute, friendly 3D illustration of a robot or owl acting as an AI mentor, rendered in a modern, bright playful style with soft lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9KWjKiHpo1ou7tzWRBEpE4DVCYJvcjgyGL3Fcdt6Icwe-mt0gABZ6x6UG2lsfTgs82FP1-Ggoe52umsjkESzKRkDk7xEBuv91E_lU3oFnZttY3Tt8BvERoKkfCz-nwmqMqmkecOmrFQyNOcicjsPvX2tXA8qLgeZYlUlebgxrfuB5EoPu2SYmFfF1Vuim9807orkVCQnsx9X54XoAV5u_TcjuTSCV7x7pIsd1u_87m9HwNORR-qCtHqNt60te6UB9oPFEU1ni8UU"/>
+</div>
+<div class="bg-surface p-md rounded-2xl rounded-bl-sm shadow-[0_10px_40px_0_rgba(0,0,0,0.04)] border-t-4 border-primary">
+<p class="font-body-md text-body-md text-on-surface">Hello! I'm your Edu Mentor. What would you like to learn about today? I can help you with science, math, or anything else!</p>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex gap-4 max-w-[85%] md:max-w-[70%] self-end flex-row-reverse">
+<div class="bg-primary text-on-primary p-md rounded-2xl rounded-br-sm shadow-[0_10px_40px_0_rgba(0,0,0,0.04)]">
+<p class="font-body-md text-body-md">Can you explain what photosynthesis is? I have a test tomorrow.</p>
+</div>
+</div>
+<!-- AI Message -->
+<div class="flex gap-4 max-w-[85%] md:max-w-[70%]">
+<div class="w-10 h-10 flex-shrink-0 bg-primary-container rounded-full flex items-center justify-center border-2 border-primary self-end overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A cute, friendly 3D illustration of a robot or owl acting as an AI mentor, rendered in a modern, bright playful style with soft lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3aPGpQY_FOjbkOn8MrbqR-9ux55fXN6arYB8i-X8PRqUWA6aiijAUYrSRGaPC86s5nm-51KVXSHI2wZ9SXK23TBLd2pQW-ysV4CbKzGY0igFRSRRLgFarLFZWnZ8wXmRQGnuvQ-AEEexhei5XEqjMFvv_Y_FgRUA-WlQYvf8LEHGu66YxzmTCcmxaQrPBaRidzqewECwtLBTibB_J42YkVkgFJIBgBzoCWICKP9-HH5c7-64EdFtMh1olOXM6fopYxtHNiDsiEbc"/>
+</div>
+<div class="bg-surface p-md rounded-2xl rounded-bl-sm shadow-[0_10px_40px_0_rgba(0,0,0,0.04)] border-t-4 border-secondary-container">
+<p class="font-body-md text-body-md text-on-surface mb-4">Of course! Think of photosynthesis like a plant cooking its own food. 🌿</p>
+<p class="font-body-md text-body-md text-on-surface">Plants use three ingredients:</p>
+<ul class="list-disc list-inside mt-2 space-y-1 font-body-md text-body-md text-on-surface">
+<li><strong>Sunlight</strong> (energy)</li>
+<li><strong>Water</strong> (from the soil)</li>
+<li><strong>Carbon Dioxide</strong> (from the air)</li>
+</ul>
+<p class="font-body-md text-body-md text-on-surface mt-4">They mix these together in their leaves to create sugar (food for the plant) and oxygen (which we breathe!).</p>
+<!-- Interactive Elements in Chat -->
+<div class="mt-4 flex gap-2">
+<button class="bg-surface-container-low text-primary font-label-sm text-label-sm px-4 py-2 rounded-full hover:bg-primary-container hover:text-on-primary-container transition-colors border border-outline-variant">
+                            Tell me more
+                        </button>
+<button class="bg-surface-container-low text-primary font-label-sm text-label-sm px-4 py-2 rounded-full hover:bg-primary-container hover:text-on-primary-container transition-colors border border-outline-variant">
+                            Show an image
+                        </button>
+</div>
+</div>
+</div>
+<!-- AI Typing Indicator -->
+<div class="flex gap-4 max-w-[85%] md:max-w-[70%] items-end hidden" id="typing-indicator">
+<div class="w-10 h-10 flex-shrink-0 bg-primary-container rounded-full flex items-center justify-center border-2 border-primary overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A cute, friendly 3D illustration of a robot or owl acting as an AI mentor, rendered in a modern, bright playful style with soft lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBUwblK8LGpPfVYCQjcpk_lqr1MUPKPTm-mJ8CADOmaKJcpDItp5EtW_YM2nRbR1ltgTXyJEbg7HAyeL_UsidwCpKYdx4Gw_VqGGlAtSVkuTgKFjVSbZG1zz3zq-rMJR2DRNchL_ZD5GiL2AyFfMxvLD3JnQFCF2Szw48q24cllmbfJnE0eaRsKugrqdDntG20qDXwB7k-JY-Hp-efVmnMnR_a4xDWdwGi6x6aGqYKFelxTHQ9pOYtwXLGx465oPbf2K6mP-eZQaU"/>
+</div>
+<div class="bg-surface p-sm px-md rounded-2xl rounded-bl-sm shadow-[0_10px_40px_0_rgba(0,0,0,0.04)] flex gap-1 items-center h-10">
+<div class="w-2 h-2 bg-on-surface-variant rounded-full typing-dot"></div>
+<div class="w-2 h-2 bg-on-surface-variant rounded-full typing-dot"></div>
+<div class="w-2 h-2 bg-on-surface-variant rounded-full typing-dot"></div>
+</div>
+</div>
+</div>
+<!-- Input Area Container -->
+<div class="flex-none bg-background px-margin-mobile md:px-margin-desktop py-md border-t-2 border-outline-variant">
+<!-- Suggested Questions (Chips) -->
+<div class="flex gap-3 overflow-x-auto no-scrollbar pb-sm mb-2">
+<button class="flex-none bg-surface text-on-surface font-label-sm text-label-sm px-4 py-2 rounded-full border-2 border-outline-variant hover:border-primary hover:text-primary transition-colors whitespace-nowrap shadow-sm">
+                    What is Photosynthesis?
+                </button>
+<button class="flex-none bg-surface text-on-surface font-label-sm text-label-sm px-4 py-2 rounded-full border-2 border-outline-variant hover:border-primary hover:text-primary transition-colors whitespace-nowrap shadow-sm">
+                    Explain Fractions
+                </button>
+<button class="flex-none bg-surface text-on-surface font-label-sm text-label-sm px-4 py-2 rounded-full border-2 border-outline-variant hover:border-primary hover:text-primary transition-colors whitespace-nowrap shadow-sm">
+                    What are Animals?
+                </button>
+<button class="flex-none bg-surface text-on-surface font-label-sm text-label-sm px-4 py-2 rounded-full border-2 border-outline-variant hover:border-primary hover:text-primary transition-colors whitespace-nowrap shadow-sm">
+                    Tell me a math joke
+                </button>
+</div>
+<!-- Input Box -->
+<div class="bg-surface rounded-2xl shadow-[0_10px_40px_0_rgba(0,0,0,0.04)] border-2 border-outline-variant focus-within:border-primary transition-colors p-2 flex items-end gap-2 relative">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-low flex-none mb-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">image</span>
+</button>
+<textarea class="w-full bg-transparent border-none focus:ring-0 resize-none py-3 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant max-h-[120px] min-h-[48px]" placeholder="Ask Edu Mentor a question..." rows="1" style="scrollbar-width: thin;"></textarea>
+<div class="flex items-center gap-1 flex-none mb-1">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mic</span>
+</button>
+<button class="p-3 bg-primary text-on-primary rounded-xl hover:bg-on-primary-fixed-variant transition-colors flex items-center justify-center shadow-md border-b-4 border-on-primary-fixed-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+<!-- Bottom Actions -->
+<div class="flex justify-between items-center mt-4 pt-4 border-t border-outline-variant hidden md:flex">
+<button class="flex items-center gap-2 text-on-surface-variant font-label-lg text-label-lg hover:text-primary transition-colors">
+<span class="material-symbols-outlined">save</span>
+                    Save Notes
+                </button>
+<button class="flex items-center gap-2 text-on-surface-variant font-label-lg text-label-lg hover:text-secondary transition-colors">
+<span class="material-symbols-outlined">quiz</span>
+                    Take a Quiz
+                </button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface border-t-2 border-outline-variant rounded-t-xl shadow-[0_-10px_40px_0_rgba(0,0,0,0.04)]">
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-label-sm text-label-sm mt-1">Subjects</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 mt-1 scale-90 duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<span class="font-label-sm text-label-sm mt-1">AI Tutor</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="font-label-sm text-label-sm mt-1">Progress</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined">menu</span>
+<span class="font-label-sm text-label-sm mt-1">Menu</span>
+</div>
+</nav>
+<script>
+        // Simple auto-resize for textarea
+        const textarea = document.querySelector('textarea');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            if(this.value === '') {
+                this.style.height = '48px';
+            }
+        });
+    </script>
+</body></html>

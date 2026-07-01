@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+<!-- STITCH_SVG_START:ANIMATION_8 class="fixed inset-0 w-full h-full" --><div class="fixed inset-0 w-full h-full" id="animated-svg-ANIMATION_8" style="display:block;"><svg viewbox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="robotBody" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#2563EB"></stop>
+<stop offset="100%" style="stop-color:#1D4ED8"></stop>
+</lineargradient>
+</defs>
+<!-- Body -->
+<rect fill="url(#robotBody)" height="180" rx="40" width="200" x="100" y="140"></rect>
+<!-- Head -->
+<rect fill="#2563EB" height="110" rx="50" width="150" x="125" y="60"></rect>
+<!-- Face Screen -->
+<rect fill="#1E293B" height="70" rx="20" width="110" x="145" y="80"></rect>
+<!-- Eyes -->
+<circle cx="175" cy="115" fill="#10B981" r="8">
+<animate attributename="r" dur="2s" repeatcount="indefinite" values="8;10;8"></animate>
+</circle>
+<circle cx="225" cy="115" fill="#10B981" r="8">
+<animate attributename="r" dur="2s" repeatcount="indefinite" values="8;10;8"></animate>
+</circle>
+<!-- Antenna -->
+<line stroke="#2563EB" stroke-linecap="round" stroke-width="8" x1="200" x2="200" y1="60" y2="30"></line>
+<circle cx="200" cy="25" fill="#F59E0B" r="10">
+<animate attributename="opacity" dur="1.5s" repeatcount="indefinite" values="1;0.3;1"></animate>
+</circle>
+<!-- Arms -->
+<rect fill="#3B82F6" height="100" rx="20" width="40" x="60" y="180"></rect>
+<rect fill="#3B82F6" height="100" rx="20" width="40" x="300" y="180"></rect>
+<!-- Floating Elements -->
+<circle cx="80" cy="80" fill="#F59E0B" opacity="0.6" r="15">
+<animatetransform attributename="transform" dur="3s" repeatcount="indefinite" type="translate" values="0,0; 0,20; 0,0"></animatetransform>
+</circle>
+<path d="M320,60 L340,80 L320,100 Z" fill="#22C55E" opacity="0.6">
+<animatetransform attributename="transform" dur="5s" from="0 330 80" repeatcount="indefinite" to="360 330 80" type="rotate"></animatetransform>
+</path>
+</svg></div><!-- STITCH_SVG_END:ANIMATION_8 -->
+</body>
+</html>

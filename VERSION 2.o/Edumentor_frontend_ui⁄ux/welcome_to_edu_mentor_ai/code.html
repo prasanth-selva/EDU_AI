@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Welcome - Edu Mentor AI</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;family=Poppins:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#6bff8f",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#e6e8ea",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "outline-variant": "#c3c6d7",
+                        "tertiary": "#784b00",
+                        "surface-variant": "#e0e3e5",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary-container": "#996100",
+                        "on-background": "#191c1e",
+                        "on-secondary-fixed": "#002109",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary": "#006e2f",
+                        "surface-tint": "#0053db",
+                        "on-primary-fixed": "#00174b",
+                        "surface": "#f7f9fb",
+                        "surface-bright": "#f7f9fb",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "primary-container": "#2563eb",
+                        "on-surface": "#191c1e",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "tertiary-fixed": "#ffddb8",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-tertiary-fixed": "#2a1700",
+                        "secondary-fixed-dim": "#4ae176",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "surface-dim": "#d8dadc",
+                        "inverse-surface": "#2d3133",
+                        "outline": "#737686",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-secondary-container": "#007432",
+                        "on-tertiary-container": "#ffeedd",
+                        "background": "#f7f9fb",
+                        "on-primary-container": "#eeefff",
+                        "primary-fixed": "#dbe1ff",
+                        "on-secondary-fixed-variant": "#005321",
+                        "secondary-fixed": "#6bff8f",
+                        "error-container": "#ffdad6",
+                        "primary": "#004ac6",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "xl": "80px",
+                        "margin-mobile": "20px",
+                        "lg": "48px",
+                        "margin-desktop": "64px",
+                        "base": "8px",
+                        "md": "24px",
+                        "xs": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "display-md": ["Plus Jakarta Sans"],
+                        "poppins": ["Poppins", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "display-lg": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "display-md": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }]
+                    },
+                    "animation": {
+                        "float-slow": "float 6s ease-in-out infinite",
+                        "float-medium": "float 5s ease-in-out infinite 1s",
+                        "float-fast": "float 4s ease-in-out infinite 2s",
+                        "fade-in-up": "fadeInUp 0.8s ease-out forwards",
+                    },
+                    "keyframes": {
+                        float: {
+                            "0%, 100%": { transform: "translateY(0)" },
+                            "50%": { transform: "translateY(-20px)" },
+                        },
+                        fadeInUp: {
+                            "0%": { opacity: "0", transform: "translateY(20px)" },
+                            "100%": { opacity: "1", transform: "translateY(0)" },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .btn-thick-bottom {
+            border-bottom-width: 4px;
+        }
+    </style>
+</head>
+<body class="bg-background min-h-screen relative overflow-hidden flex flex-col items-center justify-center font-body-md text-on-surface">
+<!-- Language Selector Floating Top Right -->
+<div class="absolute top-margin-mobile md:top-margin-desktop right-margin-mobile md:right-margin-desktop z-50 animate-fade-in-up" style="animation-delay: 0.1s;">
+<div class="bg-surface shadow-[0_10px_40px_0_rgba(0,0,0,0.04)] rounded-full px-4 py-2 flex items-center space-x-2 border border-outline-variant/30 hover:scale-[1.02] transition-transform duration-200 cursor-pointer">
+<span class="material-symbols-outlined text-primary text-xl">language</span>
+<select class="bg-transparent text-label-lg font-label-lg border-none focus:ring-0 text-on-surface cursor-pointer pr-4 appearance-none outline-none">
+<option value="en">English</option>
+<option value="ta">Tamil</option>
+</select>
+<span class="material-symbols-outlined text-on-surface-variant text-sm absolute right-4 pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Floating Background Elements -->
+<div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+<!-- Star 1 -->
+<div class="absolute top-20 left-[10%] animate-float-slow opacity-60">
+<div class="w-16 h-16 bg-tertiary-fixed-dim rounded-full flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-on-tertiary-fixed text-3xl" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<!-- Book 1 -->
+<div class="absolute top-40 right-[15%] animate-float-medium opacity-60">
+<div class="w-20 h-20 bg-primary-container rounded-2xl flex items-center justify-center shadow-lg rotate-12">
+<span class="material-symbols-outlined text-on-primary-container text-4xl" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+</div>
+</div>
+<!-- Cloud 1 -->
+<div class="absolute bottom-40 left-[20%] animate-float-fast opacity-60">
+<div class="w-24 h-16 bg-surface rounded-full flex items-center justify-center shadow-[0_10px_40px_0_rgba(0,0,0,0.04)] -rotate-6">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">cloud</span>
+</div>
+</div>
+<!-- Star 2 -->
+<div class="absolute bottom-20 right-[25%] animate-float-slow opacity-60">
+<div class="w-12 h-12 bg-secondary-container rounded-full flex items-center justify-center shadow-lg -rotate-12">
+<span class="material-symbols-outlined text-on-secondary-container text-2xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+</div>
+</div>
+<!-- Main Content Canvas -->
+<main class="relative z-10 w-full max-w-4xl mx-auto px-margin-mobile md:px-margin-desktop flex flex-col items-center text-center mt-xl mb-xl">
+<!-- Hero Animation -->
+<div class="w-full max-w-md h-64 md:h-80 mb-lg animate-fade-in-up" style="animation-delay: 0.2s;">
+
+</div>
+<!-- Typography -->
+<div class="space-y-sm mb-lg max-w-2xl animate-fade-in-up" style="animation-delay: 0.3s;">
+<h1 class="font-poppins text-display-md md:text-display-lg text-on-surface leading-tight tracking-tight">
+                Welcome to <span class="text-primary">Edu Mentor AI</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mx-auto">
+                Learn Anything. Anytime. Even Without Internet.
+            </p>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col sm:flex-row items-center justify-center gap-md w-full max-w-md animate-fade-in-up" style="animation-delay: 0.4s;">
+<button class="w-full sm:w-auto min-h-[56px] px-8 bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-label-lg text-label-lg rounded-full flex items-center justify-center transition-all duration-200 transform hover:scale-[1.02] shadow-[0_10px_40px_0_rgba(0,0,0,0.04)] hover:shadow-[0_20px_60px_0_rgba(0,74,198,0.08)] btn-thick-bottom border-primary-fixed-dim">
+                Start Learning
+                <span class="material-symbols-outlined ml-2 text-lg">arrow_forward</span>
+</button>
+<button class="w-full sm:w-auto min-h-[56px] px-8 bg-surface hover:bg-surface-container-low text-primary border-2 border-outline-variant hover:border-primary font-label-lg text-label-lg rounded-full flex items-center justify-center transition-all duration-200 transform hover:scale-[1.02] shadow-sm">
+                Teacher Login
+            </button>
+</div>
+</main>
+</body></html>

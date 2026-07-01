@@ -1,0 +1,23 @@
+# Edu Mentor AI - Product Specification
+
+## Overview
+A world-class offline AI-powered education platform for rural students (LKG to 6th Standard).
+
+## Design Philosophy
+- **Modern Educational SaaS**: Professional for stakeholders, joyful for children.
+- **Material 3 Foundation**: Structured hierarchy, clear focus.
+- **Tactile UI**: Large targets, rounded corners (24px), soft shadows.
+- **Engagement**: Animated mascot, micro-interactions, reward systems.
+
+## Core User Journey
+1. **Welcome**: Language selection and role entry.
+2. **Identification**: Simple student login/profile selection.
+3. **Exploration**: Dashboard for AI help, Quizzes, and Subjects.
+4. **Learning**: Interactive AI chat and structured subject progress.
+5. **Assessment**: Gamified quiz experience with feedback.
+6. **Management**: Teacher tools for content indexing and student tracking.
+
+## Technical Goals
+- Dependency-free Vanilla JS for offline PWA performance.
+- High accessibility (large fonts, clear contrast).
+- Responsive layout (Sidebar on Desktop/Tablet, Bottom Nav on Mobile).

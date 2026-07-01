@@ -1,0 +1,346 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Subject Exploration - EduPulse AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary-fixed": "#00174b",
+                        "surface-container-highest": "#e0e3e5",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary-container": "#996100",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-tint": "#0053db",
+                        "on-secondary-fixed": "#002109",
+                        "background": "#f7f9fb",
+                        "on-tertiary-container": "#ffeedd",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#eceef0",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#ffddb8",
+                        "tertiary": "#784b00",
+                        "surface": "#f7f9fb",
+                        "on-primary-container": "#eeefff",
+                        "on-primary": "#ffffff",
+                        "secondary": "#006e2f",
+                        "on-secondary-fixed-variant": "#005321",
+                        "surface-dim": "#d8dadc",
+                        "on-surface-variant": "#434655",
+                        "surface-container-low": "#f2f4f6",
+                        "inverse-surface": "#2d3133",
+                        "primary-container": "#2563eb",
+                        "primary": "#004ac6",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "secondary-fixed": "#6bff8f",
+                        "on-surface": "#191c1e",
+                        "on-secondary-container": "#007432",
+                        "surface-bright": "#f7f9fb",
+                        "primary-fixed": "#dbe1ff",
+                        "outline-variant": "#c3c6d7",
+                        "on-tertiary-fixed": "#2a1700",
+                        "on-background": "#191c1e",
+                        "surface-variant": "#e0e3e5",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "secondary-fixed-dim": "#4ae176",
+                        "secondary-container": "#6bff8f",
+                        "surface-container-high": "#e6e8ea",
+                        "outline": "#737686",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#003ea8"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "xs": "4px",
+                        "base": "8px",
+                        "xl": "80px",
+                        "md": "24px",
+                        "gutter": "24px",
+                        "sm": "12px",
+                        "margin-desktop": "64px",
+                        "lg": "48px",
+                        "margin-mobile": "20px"
+                    },
+                    fontFamily: {
+                        "body-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "display-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"]
+                    },
+                    fontSize: {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "display-md": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "display-lg": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        /* Custom shadows based on depth model */
+        .shadow-level-1 { box-shadow: 0 10px 40px rgba(0,0,0,0.04); }
+        .shadow-level-2 { box-shadow: 0 20px 60px rgba(0,74,198,0.08); }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (Desktop) -->
+<nav class="bg-surface-container-lowest shadow-[40px_0_40px_rgba(0,0,0,0.04)] docked left-0 h-full w-64 hidden md:flex flex-col h-screen fixed left-0 top-0 py-6 z-40">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary font-bold text-xl">E</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-black text-primary">EduMentor</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Learning for All</p>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto px-2 space-y-1">
+<!-- Dashboard -->
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 mx-2 my-1 hover:bg-surface-container-high hover:scale-[1.02] transition-transform duration-200 rounded-xl font-label-lg text-label-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">dashboard</span>
+                Dashboard
+            </a>
+<!-- Subjects (Active) -->
+<a class="flex items-center gap-4 bg-primary text-on-primary rounded-xl px-4 py-3 mx-2 my-1 shadow-[0_4px_0_0_#003ea8] translate-y-1 duration-75 font-label-lg text-label-lg" href="#">
+<span class="material-symbols-outlined fill">auto_stories</span>
+                Subjects
+            </a>
+<!-- AI Tutor -->
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 mx-2 my-1 hover:bg-surface-container-high hover:scale-[1.02] transition-transform duration-200 rounded-xl font-label-lg text-label-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">smart_toy</span>
+                AI Tutor
+            </a>
+<!-- Quizzes -->
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 mx-2 my-1 hover:bg-surface-container-high hover:scale-[1.02] transition-transform duration-200 rounded-xl font-label-lg text-label-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">quiz</span>
+                Quizzes
+            </a>
+<!-- Teacher -->
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 mx-2 my-1 hover:bg-surface-container-high hover:scale-[1.02] transition-transform duration-200 rounded-xl font-label-lg text-label-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">school</span>
+                Teacher
+            </a>
+</div>
+<div class="px-6 mt-auto">
+<button class="w-full h-[56px] bg-secondary text-on-secondary font-label-lg text-label-lg rounded-xl border-b-4 border-on-secondary-fixed-variant hover:brightness-105 transition-all active:translate-y-1 active:border-b-0">
+                Start Learning
+            </button>
+</div>
+</nav>
+<!-- BottomNavBar (Mobile) -->
+<nav class="bg-surface shadow-[0_-10px_40px_rgba(0,0,0,0.04)] docked full-width bottom-0 rounded-t-xl fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-margin-mobile py-4 md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-6 py-2 scale-90 duration-150" href="#">
+<span class="material-symbols-outlined fill mb-1">menu_book</span>
+<span class="font-label-sm text-label-sm">Books</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined mb-1">forum</span>
+<span class="font-label-sm text-label-sm">AI Chat</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined mb-1">assignment</span>
+<span class="font-label-sm text-label-sm">Quiz</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined mb-1">person_apron</span>
+<span class="font-label-sm text-label-sm">Teacher</span>
+</a>
+</nav>
+<!-- Main Content -->
+<main class="md:ml-64 pt-8 pb-32 md:pb-12 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto min-h-screen">
+<!-- Header -->
+<header class="mb-xl flex items-center justify-between">
+<div>
+<h2 class="font-display-md text-display-md text-on-surface mb-2">Explore Subjects</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Pick up where you left off or start something new.</p>
+</div>
+<div class="hidden md:flex gap-3">
+<button class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</header>
+<!-- Subjects Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Mathematics Card -->
+<article class="bg-surface rounded-xl shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300 border-t-4 border-primary overflow-hidden flex flex-col">
+<div class="h-48 w-full relative">
+<img class="w-full h-full object-cover" data-alt="A vibrant, modern 3D illustration of mathematical concepts including floating geometric shapes, equations, and a glowing abacus against a soft light-blue background. The lighting is high-key and optimistic, designed for a modern digital learning platform. The visual style is playful yet sophisticated, avoiding childish aesthetics." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJTPYAS-H-IA23wQ0UngjU1v3fqheRZDoeWRIsc0ucX2NGXPTdD5d0CxbrhwIiK4BaNpbZlOvt-8zq24D3iDPlIzxvGvTLUsAChsr5BpNy0EG0DQ67R1L3ZKJ2hx2p_LjtW8oUNr1pxnD41miMCbzxfZ3tcIBtSdR6BemkBHsFl0Ack-KVZYx7BbAIOJLDuYUita6L_K69tb7eWnSbVprZGhvRkPdw0aNekOeF0wx7ZZXgbM5L2sXxDkmK581c4JYMa1-RNJN-DvA">
+<div class="absolute top-4 right-4 bg-surface/90 backdrop-blur px-3 py-1 rounded-full font-label-sm text-label-sm text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">local_fire_department</span>
+                        3 Day Streak
+                    </div>
+</div>
+<div class="p-md flex-1 flex flex-col">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">Mathematics</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Fractions &amp; Decimals</p>
+<div class="mt-auto">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-lg text-label-lg text-on-surface">65% Completed</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">12/18 Lessons</span>
+</div>
+<!-- Progress Bar (Thick 16px) -->
+<div class="h-4 bg-surface-container rounded-full overflow-hidden mb-6">
+<div class="h-full bg-secondary rounded-full transition-all duration-1000 ease-out" style="width: 65%;"></div>
+</div>
+<button class="w-full h-[56px] bg-primary text-on-primary font-label-lg text-label-lg rounded-xl border-b-4 border-primary-fixed-dim hover:brightness-105 active:translate-y-1 active:border-b-0 transition-all flex items-center justify-center gap-2">
+                            Continue Learning
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Science Card -->
+<article class="bg-surface rounded-xl shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300 border-t-4 border-secondary overflow-hidden flex flex-col">
+<div class="h-48 w-full relative">
+<img class="w-full h-full object-cover" data-alt="A bright, engaging 3D illustration of science elements featuring a stylized microscope, glowing DNA helix, and colorful bubbling flasks on a clean, soft mint-green background. The aesthetic is modern-playful, using soft diffuse lighting and premium textures suitable for an educational app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEMosnc5W1pF1zOBn0PVWXkSyMlqYQt20RyFOpKbaKiGSGplhESI27c5CX5bjWFvsAsTaM_rJ_y7s7IhP890nirlQxVsjtw77a_GO3LYcO61HCRA1gNwwgnnuXih0fzXkjBit7lbZyg6Ugeqfg2gwhb1-64l1SbR6zHlVhR8Eypuu3eDax_a0m7cEN_iXwmuF6PLYPLtvw51yDOvIjaYLkyQHY7Ex2qSEQ9htZWtPcMK0cZrWurM_yE9YvUM2yctCcscpkZJYGsiQ">
+</div>
+<div class="p-md flex-1 flex flex-col">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">Science</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">The Solar System</p>
+<div class="mt-auto">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-lg text-label-lg text-on-surface">30% Completed</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">3/10 Lessons</span>
+</div>
+<!-- Progress Bar (Thick 16px) -->
+<div class="h-4 bg-surface-container rounded-full overflow-hidden mb-6">
+<div class="h-full bg-secondary rounded-full transition-all duration-1000 ease-out" style="width: 30%;"></div>
+</div>
+<button class="w-full h-[56px] bg-primary text-on-primary font-label-lg text-label-lg rounded-xl border-b-4 border-primary-fixed-dim hover:brightness-105 active:translate-y-1 active:border-b-0 transition-all flex items-center justify-center gap-2">
+                            Continue Learning
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+<!-- English Card -->
+<article class="bg-surface rounded-xl shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300 border-t-4 border-tertiary overflow-hidden flex flex-col">
+<div class="h-48 w-full relative">
+<img class="w-full h-full object-cover" data-alt="An elegant, modern 3D illustration representing English literature, featuring an open book with glowing pages, stylized floating letters, and a sleek quill pen. Set against a warm, soft peach background with high-key diffuse lighting. The style is premium, encouraging, and highly tactile." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfvulJpw2W95_Xeovw-l2UAB_ycLvVSB26jo5WLaERX_in3jKAIibXgkWOhtxzXe2kDoGavkp9wktwAB_VRkorVzgUZkPk1Uvmsyo4PARav9f5cfpmJ6Wvk9MakMb8pIXG7dDNog0EIu3FwrisyA5njWZUNsUYsKZF5v1WOc3Wa6IuaVM8iAnnR2SVbhnUGebcBvs7uBKw_IWIdockviNqoxeGda3OimWOUR48ucYhyKbcQ37g3D801_D5VlQChyAeisGGkSXw7Qo">
+</div>
+<div class="p-md flex-1 flex flex-col">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">English</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Grammar Fundamentals</p>
+<div class="mt-auto">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-lg text-label-lg text-on-surface">0% Completed</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">0/15 Lessons</span>
+</div>
+<!-- Progress Bar (Thick 16px) -->
+<div class="h-4 bg-surface-container rounded-full overflow-hidden mb-6">
+<div class="h-full bg-secondary rounded-full transition-all duration-1000 ease-out" style="width: 0%;"></div>
+</div>
+<button class="w-full h-[56px] bg-surface-container-high text-on-surface font-label-lg text-label-lg rounded-xl border-b-4 border-surface-dim hover:bg-surface-variant active:translate-y-1 active:border-b-0 transition-all flex items-center justify-center gap-2">
+                            Start Course
+                            <span class="material-symbols-outlined">play_arrow</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Tamil Card -->
+<article class="bg-surface rounded-xl shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300 border-t-4 border-tertiary-container overflow-hidden flex flex-col">
+<div class="h-48 w-full relative">
+<img class="w-full h-full object-cover" data-alt="A culturally rich yet modern 3D illustration representing the Tamil language, featuring stylized palm leaf manuscripts and elegant glowing Tamil typography floating softly. The background is a sophisticated warm amber. Lighting is diffuse and premium, conveying a sense of heritage blended with modern digital learning." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDZ4g2Z1hqVvYzOO9Xk3xOvjwjoW1-uSKKNyVg2DW55ZnkY6Qr9bJvA3XPqk6b5LbR1Gl09YPpT1WnwuH0yQzK3eXH7Jc1kb9Vn5QW38GN20nWPgUyVKV4Qb1745ZszncHI_gEvm33lCiqIlwPeFSFu1Jh_iI--Tb0s_jDuoJUKF9vTHuWLiEH7lfdvQjPIC4LeMWl8cz3T0gAH2LIE3sM6yCsCK1ytibJ91i9cFavLsLM1JZF7L8uJn7NZwOpGzQP26LqvM90xR0">
+<div class="absolute top-4 right-4 bg-surface/90 backdrop-blur px-3 py-1 rounded-full font-label-sm text-label-sm text-tertiary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">new_releases</span>
+                        New Update
+                    </div>
+</div>
+<div class="p-md flex-1 flex flex-col">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">Tamil</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Poetry &amp; Prose</p>
+<div class="mt-auto">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-lg text-label-lg text-on-surface">85% Completed</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">17/20 Lessons</span>
+</div>
+<!-- Progress Bar (Thick 16px) -->
+<div class="h-4 bg-surface-container rounded-full overflow-hidden mb-6">
+<div class="h-full bg-secondary rounded-full transition-all duration-1000 ease-out" style="width: 85%;"></div>
+</div>
+<button class="w-full h-[56px] bg-primary text-on-primary font-label-lg text-label-lg rounded-xl border-b-4 border-primary-fixed-dim hover:brightness-105 active:translate-y-1 active:border-b-0 transition-all flex items-center justify-center gap-2">
+                            Continue Learning
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Environmental Science Card -->
+<article class="bg-surface rounded-xl shadow-level-1 hover:shadow-level-2 hover:-translate-y-1 transition-all duration-300 border-t-4 border-secondary-container overflow-hidden flex flex-col lg:col-span-2">
+<div class="flex flex-col md:flex-row h-full">
+<div class="h-48 md:h-auto md:w-2/5 relative">
+<img class="w-full h-full object-cover" data-alt="A lush, detailed 3D illustration representing Environmental Science, featuring a glowing miniature earth, stylized green trees, and wind turbines on a soft, natural background. The aesthetic is clean, modern, and optimistic, utilizing soft drop shadows and bright, inviting colors suitable for an educational interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdxoaVndqsINXbBtxjsunVnx6IXmHu3BAAhUFOSBr-wv3Eo5pCNWpbBhMwwMX6rQ6SW-uq5MP-PFHEuvevgYAvElKv8DFkIBFr5S9fBnrC4W6bvZ6EPLxxWEE38Ooi3DGgOpff-3SWTbLptIJ1x3CDzHls9KSk4VcoITlXi2QpvWf_4aGt4DsVjxMGNJQNhlC3NL3htmLNLzuTgIgjnGs9cPiVCBzunlRP8nI5FmAJQnguyUrfWq3zjlriqdm1zTwgISpsXuEiRDI">
+</div>
+<div class="p-md flex-1 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline-md text-headline-md text-on-surface">Environmental Science</h3>
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm uppercase tracking-wider">Recommended</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 max-w-md">Ecosystems &amp; Biodiversity. Dive into the fascinating world of natural habitats and conservation efforts.</p>
+</div>
+<div class="mt-4">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-lg text-label-lg text-on-surface">15% Completed</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2/12 Lessons</span>
+</div>
+<!-- Progress Bar (Thick 16px) -->
+<div class="h-4 bg-surface-container rounded-full overflow-hidden mb-6">
+<div class="h-full bg-secondary rounded-full transition-all duration-1000 ease-out" style="width: 15%;"></div>
+</div>
+<div class="flex gap-4">
+<button class="flex-1 h-[56px] bg-primary text-on-primary font-label-lg text-label-lg rounded-xl border-b-4 border-primary-fixed-dim hover:brightness-105 active:translate-y-1 active:border-b-0 transition-all flex items-center justify-center gap-2">
+                                    Continue Learning
+                                </button>
+<button class="w-[56px] h-[56px] bg-surface-container text-on-surface rounded-xl border-b-4 border-surface-dim hover:bg-surface-variant active:translate-y-1 active:border-b-0 transition-all flex items-center justify-center">
+<span class="material-symbols-outlined">bookmark_border</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</article>
+</div>
+</main>
+
+
+</body></html>
