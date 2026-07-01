@@ -19,6 +19,36 @@ const state = {
     subjectsList: [],
 };
 
+// ── Session Persistence ───────────────────────────────────────
+const SESSION_KEY = 'edumentor_session';
+
+function saveSession() {
+    try {
+        localStorage.setItem(SESSION_KEY, JSON.stringify({
+            currentUser: state.currentUser,
+            isTeacher:   state.isTeacher,
+        }));
+    } catch(e) { /* Safari private mode may block */ }
+}
+
+function loadSession() {
+    try {
+        const raw = localStorage.getItem(SESSION_KEY);
+        if (!raw) return false;
+        const saved = JSON.parse(raw);
+        if (saved && saved.currentUser && saved.currentUser.id) {
+            state.currentUser = saved.currentUser;
+            state.isTeacher   = saved.isTeacher || false;
+            return true;
+        }
+    } catch(e) { /* corrupt data */ }
+    return false;
+}
+
+function clearSession() {
+    try { localStorage.removeItem(SESSION_KEY); } catch(e) {}
+}
+
 // ── API Helpers ───────────────────────────────────────────────
 async function apiPost(path, body) {
     const res = await fetch(path, {
@@ -240,9 +270,10 @@ function buildBottomNav(active, isTeacher = false) {
 
 // ── Logout ────────────────────────────────────────────────────
 function logout() {
-    state.currentUser = null;
-    state.isTeacher   = false;
+    state.currentUser  = null;
+    state.isTeacher    = false;
     state.progressData = [];
+    clearSession();
     showToast('Logged out successfully', 'info');
     navigate('welcome');
 }
@@ -357,8 +388,9 @@ function renderRegister() {
         
         try {
             const data = await apiPost('/api/student/register', { username: user, name: name, password: pass, grade: grade });
-            state.currentUser = { id: data.student_id, name: data.name, grade: data.grade };
+            state.currentUser = { id: data.student_id, name: data.name, grade: String(data.grade) };
             state.isTeacher   = false;
+            saveSession();
             showToast(`Welcome, ${data.name}! 🎉`, 'success');
             navigate('dashboard');
         } catch (err) {
@@ -414,8 +446,9 @@ function renderLogin() {
         
         try {
             const data = await apiPost('/api/student/login', { username: user, password: pass });
-            state.currentUser = { id: data.student_id, name: data.name, grade: data.grade };
+            state.currentUser = { id: data.student_id, name: data.name, grade: String(data.grade) };
             state.isTeacher   = false;
+            saveSession();
             showToast(`Welcome back, ${data.name}! 🎉`, 'success');
             navigate('dashboard');
         } catch (err) {
@@ -469,7 +502,8 @@ function renderTeacherLogin() {
         try {
             const data = await apiPost('/api/teacher/login', { username: user, password: pass });
             state.isTeacher   = true;
-            state.currentUser = { id: data.teacher_id, name: 'Teacher' };
+            state.currentUser = { id: data.teacher_id, name: 'Teacher', grade: null };
+            saveSession();
             showToast('Welcome back, Teacher! 👋', 'success');
             navigate('teacher_dashboard');
         } catch (err) {
@@ -505,7 +539,7 @@ function renderDashboard() {
                             <span class="text-label-sm text-on-surface-variant">CLASS</span>
                             <div class="stat-card-icon" style="background:rgba(0,74,198,0.1);color:var(--primary);"><span class="material-symbols-outlined">grade</span></div>
                         </div>
-                        <div class="stat-card-value text-primary">${state.currentUser.grade}</div>
+                        <div class="stat-card-value text-primary">Class ${state.currentUser.grade || '—'}</div>
                         <div class="stat-card-label">My Class</div>
                     </div>
                     <div class="stat-card card-secondary">
@@ -1425,6 +1459,18 @@ function registerSW() {
 
 // ── Init ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => navigate('welcome'), 800);
     registerSW();
+    // Hydrate session from localStorage before deciding which page to show
+    if (loadSession()) {
+        // User was logged in before - go directly to their dashboard
+        setTimeout(() => {
+            if (state.isTeacher) {
+                navigate('teacher_dashboard');
+            } else {
+                navigate('dashboard');
+            }
+        }, 800);
+    } else {
+        setTimeout(() => navigate('welcome'), 800);
+    }
 });
