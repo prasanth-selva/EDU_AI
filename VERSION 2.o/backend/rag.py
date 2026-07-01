@@ -77,13 +77,12 @@ def get_answer(question: str) -> str:
         docs = vs.similarity_search(question, k=4)
         context = "\n\n".join(d.page_content for d in docs)
 
-        from langchain.prompts import PromptTemplate
-        from langchain.chains import LLMChain
+        from langchain_core.prompts import PromptTemplate
         llm    = _get_llm()
         prompt = PromptTemplate(input_variables=["context","question"], template=PROMPT_TEMPLATE)
-        chain  = LLMChain(llm=llm, prompt=prompt)
-        result = chain.run(context=context, question=question)
-        return result.strip()
+        chain  = prompt | llm
+        result = chain.invoke({"context": context, "question": question})
+        return str(result).strip()
     except Exception as e:
         logger.exception("RAG error")
         return (f"⚠️ The AI Tutor is unavailable right now. "
