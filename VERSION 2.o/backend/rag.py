@@ -1,8 +1,8 @@
 """
-RAG Pipeline — PDF → Chunks → FAISS → Strict Ollama Answer
-STRICT MODE: Only answers from uploaded textbooks. Verified with similarity threshold.
+RAG Pipeline — PDF → Chunks → FAISS → Hybrid Ollama Answer
+HYBRID MODE: Answers from uploaded textbooks when possible. Falls back to General AI if no context found.
 """
-import os, logging
+import os, logging, json
 
 BASE_DIR    = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FAISS_DIR   = os.path.join(BASE_DIR, "db", "faiss_index")
@@ -11,15 +11,12 @@ CHAT_MODEL  = os.getenv("CHAT_MODEL",  "qwen2.5:1.5b")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 
 # FAISS L2 distance threshold — scores ABOVE this mean the retrieved chunks
-# are too dissimilar to the question, so we refuse to answer.
-# all-minilm L2 distance: 0.0 = identical, ~1.0 = very different.
-# Typical range for "relevant" content is < 0.8.
-SIMILARITY_THRESHOLD = float(os.getenv("RAG_SIMILARITY_THRESHOLD", "0.85"))
+# are too dissimilar to the question, so we fallback to the general LLM.
+# all-minilm L2 distance typically ranges from 0 to 2.
+SIMILARITY_THRESHOLD = float(os.getenv("RAG_SIMILARITY_THRESHOLD", "1.1"))
 
 logger = logging.getLogger("edumentor.rag")
 logger.setLevel(logging.DEBUG)
-
-NO_CONTEXT_REPLY = "This answer was not found in the uploaded textbook."
 
 
 def _get_embeddings():
@@ -27,10 +24,9 @@ def _get_embeddings():
     return OllamaEmbeddings(model=EMBED_MODEL, base_url=OLLAMA_HOST)
 
 
-def _get_llm():
+def _get_llm(temperature=0.05):
     from langchain_ollama import OllamaLLM
-    # Very low temperature = factual, no creative hallucination
-    return OllamaLLM(model=CHAT_MODEL, base_url=OLLAMA_HOST, temperature=0.05)
+    return OllamaLLM(model=CHAT_MODEL, base_url=OLLAMA_HOST, temperature=temperature)
 
 
 def _get_vectorstore(embeddings):
@@ -104,15 +100,13 @@ def process_pdf_and_index(filepath: str, subject: str = "General") -> int:
         raise ValueError(f"Embedding or vector storage failed: {e}")
 
 
-# ── Strict RAG Prompt ─────────────────────────────────────────────────────────
-PROMPT_TEMPLATE = """You are Edu Mentor AI, a strict educational assistant for school students.
+# ── Strict RAG Prompt (Textbook Context) ──────────────────────────────────────
+STRICT_PROMPT_TEMPLATE = """You are Edu Mentor AI, an educational assistant for school students.
 
 CRITICAL RULES:
 1. Answer ONLY using information found in the TEXTBOOK CONTEXT section below.
-2. If the textbook context does not contain the answer, reply ONLY with:
-   "This answer was not found in the uploaded textbook."
-3. Do NOT invent facts. Do NOT use your own general knowledge.
-4. Keep your answer clear and age-appropriate for school students.
+2. Do NOT invent facts. Do NOT use your own general knowledge.
+3. Keep your answer clear and age-appropriate for school students.
 
 TEXTBOOK CONTEXT:
 {context}
@@ -121,32 +115,51 @@ STUDENT QUESTION: {question}
 
 ANSWER (strictly from textbook context):"""
 
+# ── General Fallback Prompt ───────────────────────────────────────────────────
+GENERAL_PROMPT_TEMPLATE = """You are Edu Mentor AI, a friendly and knowledgeable educational assistant for school students.
 
-def get_answer(question: str) -> str:
+The student has asked a question that is not covered in their uploaded textbooks.
+Answer the question using your general knowledge.
+
+CRITICAL RULES:
+1. Keep the answer highly accurate and age-appropriate for a school student.
+2. Explain concepts simply and clearly.
+3. Be encouraging and helpful.
+
+STUDENT QUESTION: {question}
+
+ANSWER:"""
+
+
+def get_answer(question: str) -> dict:
     """
-    Retrieve relevant context using FAISS and answer STRICTLY from it.
-    If similarity score is above threshold, refuse to answer.
+    Retrieve relevant context using FAISS. 
+    If a good match exists, answer STRICTLY from it.
+    If similarity score is above threshold (no good match), fall back to General AI.
+    
+    Returns: {"answer": str, "source_type": "textbook" | "general", "sources": list}
     """
     logger.info(f"[RAG QUERY] '{question}'")
+    
+    result_dict = {
+        "answer": "",
+        "source_type": "general",
+        "sources": []
+    }
 
     try:
         embeddings = _get_embeddings()
         vs = _get_vectorstore(embeddings)
 
-        if vs is None:
-            logger.warning("[RAG] FAISS index does not exist.")
-            return (
-                "📚 No textbooks uploaded yet!\n\n"
-                "Ask your teacher to upload PDF textbooks from the Teacher Dashboard. "
-                "Once uploaded, I can answer questions directly from them."
-            )
-
-        # Retrieve with scores (FAISS L2: lower = more similar)
-        docs_and_scores = vs.similarity_search_with_score(question, k=5)
-
+        docs_and_scores = []
+        if vs is not None:
+            docs_and_scores = vs.similarity_search_with_score(question, k=5)
+            
         if not docs_and_scores:
-            logger.warning("[RAG] No chunks retrieved.")
-            return NO_CONTEXT_REPLY
+            logger.warning("[RAG] No chunks retrieved or index missing. Falling back to General AI.")
+            # Fallback to general LLM directly
+            result_dict = _generate_general_answer(question)
+            return result_dict
 
         # Log every retrieved chunk for auditing
         logger.info(f"[RAG RETRIEVAL] {len(docs_and_scores)} chunks retrieved:")
@@ -159,42 +172,74 @@ def get_answer(question: str) -> str:
             )
             logger.debug(f"  [CHUNK {i+1} TEXT] {doc.page_content[:200]}")
 
-        # Hard threshold check: if best match is too dissimilar, refuse
+        # Hard threshold check: if best match is too dissimilar, fallback
         best_score = docs_and_scores[0][1]
         if best_score > SIMILARITY_THRESHOLD:
             logger.warning(
                 f"[RAG THRESHOLD] Best score {best_score:.4f} > threshold {SIMILARITY_THRESHOLD}. "
-                "No relevant context found. Refusing to answer."
+                "No relevant context found. Falling back to General AI."
             )
-            return NO_CONTEXT_REPLY
+            result_dict = _generate_general_answer(question)
+            return result_dict
 
         # Use only chunks below threshold
         relevant_docs = [(doc, score) for doc, score in docs_and_scores if score <= SIMILARITY_THRESHOLD]
         context = "\n\n---\n\n".join(doc.page_content for doc, _ in relevant_docs)
 
-        logger.info(f"[RAG] Using {len(relevant_docs)} relevant chunks for answer generation.")
+        # Extract unique sources
+        sources = list(set([doc.metadata.get('source', 'unknown') for doc, _ in relevant_docs]))
+
+        logger.info(f"[RAG] Using {len(relevant_docs)} relevant chunks. Sources: {sources}")
 
         from langchain_core.prompts import PromptTemplate
-        llm    = _get_llm()
-        prompt = PromptTemplate(input_variables=["context", "question"], template=PROMPT_TEMPLATE)
+        llm    = _get_llm(temperature=0.05) # Low temp for factual textbook extraction
+        prompt = PromptTemplate(input_variables=["context", "question"], template=STRICT_PROMPT_TEMPLATE)
         chain  = prompt | llm
 
-        result = chain.invoke({"context": context, "question": question})
-        answer = str(result).strip()
+        answer = chain.invoke({"context": context, "question": question})
+        
+        result_dict["answer"] = str(answer).strip()
+        result_dict["source_type"] = "textbook"
+        result_dict["sources"] = sources
+        
+        if not result_dict["answer"]:
+             logger.warning("[RAG] Textbook extraction returned empty. Falling back to General AI.")
+             return _generate_general_answer(question)
 
-        if not answer:
-            return NO_CONTEXT_REPLY
-
-        logger.info(f"[RAG SUCCESS] Answer generated ({len(answer)} chars).")
-        return answer
+        logger.info(f"[RAG SUCCESS] Textbook Answer generated ({len(result_dict['answer'])} chars).")
+        return result_dict
 
     except Exception as e:
         logger.exception("[RAG ERROR]")
-        return (
+        result_dict["answer"] = (
             f"⚠️ The AI Tutor encountered an error.\n\n"
             f"Please ensure Ollama is running: `ollama serve`\n\n"
             f"Error: {str(e)}"
         )
+        return result_dict
+
+def _generate_general_answer(question: str) -> dict:
+    """Helper to generate an answer using the general LLM fallback."""
+    from langchain_core.prompts import PromptTemplate
+    try:
+        # Slightly higher temperature for general conversational knowledge
+        llm = _get_llm(temperature=0.4)
+        prompt = PromptTemplate(input_variables=["question"], template=GENERAL_PROMPT_TEMPLATE)
+        chain = prompt | llm
+        
+        answer = chain.invoke({"question": question})
+        return {
+            "answer": str(answer).strip(),
+            "source_type": "general",
+            "sources": []
+        }
+    except Exception as e:
+         logger.exception("[RAG GENERAL ERROR]")
+         return {
+            "answer": f"⚠️ General AI fallback failed. Error: {str(e)}",
+            "source_type": "general",
+            "sources": []
+        }
 
 
 def get_context_for_subject(subject: str, k: int = 5) -> str:
@@ -217,22 +262,11 @@ def get_context_for_subject(subject: str, k: int = 5) -> str:
             logger.warning(f"[QUIZ CTX] No chunks for '{subject}'.")
             return ""
 
-        # Log retrieved chunks
-        for i, (doc, score) in enumerate(docs_and_scores):
-            logger.debug(
-                f"  [QUIZ CHUNK {i+1}] score={score:.4f} | "
-                f"source='{doc.metadata.get('source', 'unknown')}' | "
-                f"subject_meta='{doc.metadata.get('subject', 'unknown')}'"
-            )
-            logger.debug(f"  [QUIZ CHUNK {i+1} TEXT] {doc.page_content[:150]}")
-
         # Try to use metadata-matched chunks first
         subject_matched = [d for d, _ in docs_and_scores if d.metadata.get("subject") == subject]
         if subject_matched:
-            logger.info(f"[QUIZ CTX] {len(subject_matched)} metadata-matched chunks for '{subject}'.")
             chosen = subject_matched
         else:
-            logger.info(f"[QUIZ CTX] No metadata match for '{subject}'; using top similarity results.")
             chosen = [d for d, _ in docs_and_scores]
 
         context = "\n\n---\n\n".join(d.page_content for d in chosen)

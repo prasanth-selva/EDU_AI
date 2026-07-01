@@ -2,7 +2,7 @@
 Edu Mentor AI — FastAPI Backend  (Production-ready)
 All endpoints wired, CORS enabled, SPA served, Real Database Auth & Tracking.
 """
-import os, shutil, logging, hashlib, uuid
+import os, shutil, logging, hashlib, uuid, json
 from fastapi import FastAPI, UploadFile, File, Form, Depends, HTTPException, Request, Header
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
@@ -231,22 +231,48 @@ def ask_tutor(req: AskReq, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Question cannot be empty.")
     
     from backend.rag import get_answer
-    answer = get_answer(req.question.strip())
+    result = get_answer(req.question.strip())
+    
+    answer_text = result.get("answer", "")
+    source_type = result.get("source_type", "general")
+    sources = json.dumps(result.get("sources", []))
     
     if req.student_id:
-        chat = ChatHistory(student_id=req.student_id, question=req.question.strip(), answer=answer)
+        chat = ChatHistory(
+            student_id=req.student_id, 
+            question=req.question.strip(), 
+            answer=answer_text,
+            source_type=source_type,
+            sources=sources
+        )
         db.add(chat)
         db.commit()
         
-    return {"answer": answer}
+    return result
 
 @app.get("/api/chat_history/{student_id}")
 def get_chat_history(student_id: int, db: Session = Depends(get_db)):
     chats = db.query(ChatHistory).filter_by(student_id=student_id).order_by(ChatHistory.timestamp.asc()).all()
-    return {"history": [
-        {"id": c.id, "question": c.question, "answer": c.answer, "timestamp": c.timestamp.isoformat()}
-        for c in chats
-    ]}
+    
+    history_list = []
+    for c in chats:
+        sources_list = []
+        try:
+            if c.sources:
+                sources_list = json.loads(c.sources)
+        except Exception:
+            pass
+            
+        history_list.append({
+            "id": c.id, 
+            "question": c.question, 
+            "answer": c.answer,
+            "source_type": c.source_type,
+            "sources": sources_list,
+            "timestamp": c.timestamp.isoformat()
+        })
+        
+    return {"history": history_list}
 
 # ── Quiz ──────────────────────────────────────────────────────
 @app.post("/api/quiz/generate")

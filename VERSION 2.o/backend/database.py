@@ -64,6 +64,8 @@ class ChatHistory(Base):
     student_id = Column(Integer, ForeignKey("students.id"))
     question   = Column(Text, nullable=False)
     answer     = Column(Text, nullable=False)
+    source_type= Column(String(20), default="textbook")
+    sources    = Column(Text, nullable=True)
     timestamp  = Column(DateTime, default=datetime.datetime.utcnow)
 
     student = relationship("Student", back_populates="chat_history")

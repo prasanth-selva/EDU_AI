@@ -730,7 +730,18 @@ async function loadChatHistory() {
                 
                 const aiBubble = document.createElement('div');
                 aiBubble.className = 'chat-bubble ai';
-                aiBubble.innerHTML = (h.answer || '').replace(/\n/g, '<br>');
+                
+                let badgeHtml = '';
+                if (h.source_type === 'textbook') {
+                    badgeHtml = `<div style="margin-top:8px; display:inline-flex; align-items:center; gap:4px; padding:4px 8px; background:rgba(0,110,47,0.1); color:var(--secondary); border-radius:12px; font-size:11px; font-weight:600;"><span class="material-symbols-outlined" style="font-size:14px;">menu_book</span> Answered from Uploaded Textbook</div>`;
+                    if (h.sources && h.sources.length > 0) {
+                        badgeHtml += `<div style="font-size:11px; opacity:0.7; margin-top:4px;">Sources: ${h.sources.join(', ')}</div>`;
+                    }
+                } else if (h.source_type === 'general') {
+                    badgeHtml = `<div style="margin-top:8px; display:inline-flex; align-items:center; gap:4px; padding:4px 8px; background:rgba(217,119,6,0.1); color:#d97706; border-radius:12px; font-size:11px; font-weight:600;"><span class="material-symbols-outlined" style="font-size:14px;">smart_toy</span> General AI Answer</div>`;
+                }
+                
+                aiBubble.innerHTML = (h.answer || '').replace(/\n/g, '<br>') + badgeHtml;
                 msgs.appendChild(aiBubble);
             });
             msgs.scrollTop = msgs.scrollHeight;
@@ -771,7 +782,18 @@ async function sendChat(e) {
     try {
         const data = await apiPost('/api/ask', { question: msg, student_id: state.currentUser?.id || 1 });
         typingBubble.className = 'chat-bubble ai animate-in';
-        typingBubble.innerHTML = (data.answer || 'No answer returned.').replace(/\n/g, '<br>');
+        
+        let badgeHtml = '';
+        if (data.source_type === 'textbook') {
+            badgeHtml = `<div style="margin-top:8px; display:inline-flex; align-items:center; gap:4px; padding:4px 8px; background:rgba(0,110,47,0.1); color:var(--secondary); border-radius:12px; font-size:11px; font-weight:600;"><span class="material-symbols-outlined" style="font-size:14px;">menu_book</span> Answered from Uploaded Textbook</div>`;
+            if (data.sources && data.sources.length > 0) {
+                badgeHtml += `<div style="font-size:11px; opacity:0.7; margin-top:4px;">Sources: ${data.sources.join(', ')}</div>`;
+            }
+        } else if (data.source_type === 'general') {
+            badgeHtml = `<div style="margin-top:8px; display:inline-flex; align-items:center; gap:4px; padding:4px 8px; background:rgba(217,119,6,0.1); color:#d97706; border-radius:12px; font-size:11px; font-weight:600;"><span class="material-symbols-outlined" style="font-size:14px;">smart_toy</span> General AI Answer</div>`;
+        }
+        
+        typingBubble.innerHTML = (data.answer || 'No answer returned.').replace(/\n/g, '<br>') + badgeHtml;
     } catch (err) {
         typingBubble.className = 'chat-bubble ai animate-in';
         typingBubble.innerHTML = `<em style="color:var(--error);">⚠️ ${err.message || 'Couldn\'t reach the AI. Make sure Ollama is running.'}</em>`;
