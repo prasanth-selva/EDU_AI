@@ -84,6 +84,12 @@ def _extract_json_array(text: str) -> list:
     raise ValueError("Could not extract JSON from LLM output")
 
 
+def _clean_option(opt: str) -> str:
+    """Remove leading letter labels like 'A. ', 'A) ', '1. ', '(A) ' from options."""
+    import re as _re
+    return _re.sub(r'^[\(\[]?[A-Da-d1-4][\.\)\]]\s*', '', str(opt).strip())
+
+
 def _validate(questions: list, count: int) -> list:
     validated = []
     for q in questions:
@@ -91,8 +97,11 @@ def _validate(questions: list, count: int) -> list:
             continue
         if not all(k in q for k in ("question", "options", "correct_index")):
             continue
-        if not isinstance(q["options"], list) or len(q["options"]) < 2:
+        opts = q.get("options", [])
+        if not isinstance(opts, list) or len(opts) < 2:
             continue
+        # Clean letter prefixes from options
+        q["options"] = [_clean_option(o) for o in opts]
         ci = q.get("correct_index", 0)
         if not isinstance(ci, int) or ci < 0 or ci >= len(q["options"]):
             q["correct_index"] = 0
